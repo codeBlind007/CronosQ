@@ -1,0 +1,229 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum AuthProvider {
+  GOOGLE
+  GITHUB
+}
+
+enum JobType {
+  EMAIL
+  WEBHOOK
+  REMINDER
+  REPORT
+  CLEANUP
+}
+
+enum JobStatus {
+  ACTIVE
+  PAUSED
+  DISABLED
+}
+
+enum JobPriority {
+  LOW
+  NORMAL
+  HIGH
+  CRITICAL
+}
+
+enum ExecutionStatus {
+  QUEUED
+  RUNNING
+  SUCCESS
+  FAILED
+  RETRYING
+}
+
+enum WorkerStatus {
+  ACTIVE
+  OFFLINE
+}
+
+enum NotificationType {
+  EMAIL
+  WEBHOOK
+}
+
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  name        String?
+  avatar      String?
+
+  role        UserRole @default(USER)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  accounts    Account[]
+  jobs        Job[]
+  auditLogs   AuditLog[]
+  notificationChannels NotificationChannel[]
+
+  @@index([email])
+}
+
+
+model Account {
+  id                 String @id @default(uuid())
+
+  userId             String
+  user               User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  provider           AuthProvider
+
+  providerAccountId  String
+
+  createdAt          DateTime @default(now())
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Job {
+  id                  String @id @default(uuid())
+
+  name                String
+  description         String?
+
+  type                JobType
+
+  status              JobStatus @default(ACTIVE)
+
+  priority            JobPriority @default(NORMAL)
+
+  queueName           String
+
+  payload             Json?
+
+  isRecurring         Boolean @default(false)
+
+  cronExpression      String?
+
+  scheduledAt         DateTime?
+
+  maxRetries          Int @default(3)
+
+  retryDelaySeconds   Int @default(60)
+
+  createdById         String
+  createdBy           User @relation(fields: [createdById], references: [id])
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  executions          JobExecution[]
+
+  @@unique([createdById, name])
+  
+  @@index([status])
+  @@index([type])
+  @@index([priority])
+  @@index([createdById])
+  @@index([scheduledAt])
+}
+
+model JobExecution {
+  id              String @id @default(uuid())
+
+  jobId           String
+  job             Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  status          ExecutionStatus
+
+  attempt         Int @default(1)
+
+  workerId        String?
+  worker          Worker? @relation(fields: [workerId], references: [id])
+
+  startedAt       DateTime?
+
+  completedAt     DateTime?
+
+  durationMs      Int?
+
+  errorMessage    String?
+
+  result          Json?
+
+  createdAt       DateTime @default(now())
+
+  @@index([jobId])
+  @@index([status])
+  @@index([workerId])
+  @@index([createdAt])
+}
+
+model Worker {
+  id              String @id @default(uuid())
+
+  name            String
+
+  status          WorkerStatus @default(ACTIVE)
+
+  jobsProcessed   Int @default(0)
+
+  lastHeartbeat   DateTime
+
+  startedAt       DateTime @default(now())
+
+  executions      JobExecution[]
+
+  @@index([status])
+}
+
+model NotificationChannel {
+  id            String @id @default(uuid())
+
+  userId        String
+  user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name          String
+
+  type          NotificationType
+
+  destination   String
+
+  enabled       Boolean @default(true)
+
+  createdAt     DateTime @default(now())
+}
+
+model AuditLog {
+  id            String @id @default(uuid())
+
+  userId        String?
+  user          User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  action        String
+
+  entityType    String
+
+  entityId      String
+
+  metadata      Json?
+
+  createdAt     DateTime @default(now())
+
+  @@index([userId])
+  @@index([entityType])
+  @@index([entityId])
+  @@index([createdAt])
+}
