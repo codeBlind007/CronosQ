@@ -4,6 +4,7 @@ import cors from 'cors';
 import { clerkMiddleware } from "@clerk/express";
 import { errorMiddleware } from './middleware/error.middleware';
 import authRoutes from './modules/auth/auth.routes';
+import forwardToApp from './utils/ngrok';
 dotenv.config();
 
 const app = express();
@@ -16,6 +17,8 @@ app.use(cors({
 
 app.use(clerkMiddleware());
 app.use(express.json());
+
+forwardToApp();
 
 app.get('/', (req, res) => {
   res.send('Hello, World!');
