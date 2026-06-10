@@ -1,8 +1,9 @@
 import React from 'react'
-
 const page = () => {
   return (
-    <div>Welcome to CronosQ</div>
+    <>
+      <div>Welcome to CronosQ</div>
+    </>
   )
 }
 

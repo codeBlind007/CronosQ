@@ -7,7 +7,7 @@ import { errorMiddleware } from './middleware/error.middleware';
 
 import authRoutes from './modules/auth/auth.routes';
 import webhookRoutes from './modules/auth/webhook.routes';
-
+import jobsRoutes from './modules/jobs/jobs.routes';
 import forwardToApp from './utils/ngrok';
 
 dotenv.config();
@@ -25,8 +25,6 @@ app.use(cors({
 
 
 app.use(clerkMiddleware());
-
-
 
 app.use(
   "/api/v1/auth/webhook/clerk",
@@ -46,7 +44,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/auth/webhook', webhookRoutes);
-
+app.use("/api/v1/jobs", jobsRoutes);
 
 app.use(errorMiddleware);
 

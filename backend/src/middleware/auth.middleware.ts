@@ -1,19 +1,24 @@
-import {getAuth} from '@clerk/express'
-import {Request, Response, NextFunction} from 'express';
+import {getAuth} from '@clerk/express';
+import {Request, Response, NextFunction, RequestHandler} from 'express';
 import {AppError} from '../utils/AppError';
 
 export interface AuthenticatedRequest extends Request {
-    userId? : string;
+    userId : string;
 }
 
-export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    const {userId} = getAuth(req);
+export const authMiddleware: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
+    try{
+        const {userId} = getAuth(req);
+        console.log(userId);
+        if(!userId) {
+            throw new AppError('Unauthorized', 401);
+        }
 
-    if(!userId) {
-        throw new AppError('Unauthorized', 401);
+        (req as AuthenticatedRequest).userId = userId;
+
+        next();
+    }catch(error){
+        console.error(error);
+        next(error);
     }
-
-    req.userId = userId;
-
-    next();
 }

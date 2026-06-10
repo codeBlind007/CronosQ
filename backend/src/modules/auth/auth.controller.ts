@@ -1,10 +1,9 @@
 import {AppError} from "../../utils/AppError";
 import {getAuth} from '@clerk/express'
-import { AuthenticatedRequest } from "../../middleware/auth.middleware";
-import { NextFunction, Response } from "express";
+import { NextFunction, RequestHandler } from "express";
 
 
-const getUserProfile = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+const getUserProfile: RequestHandler = async (req, res, next: NextFunction) => {
   const auth = getAuth(req);
 
   return res.json({
