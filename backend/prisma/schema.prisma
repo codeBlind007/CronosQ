@@ -134,7 +134,6 @@ model Job {
 
   executions          JobExecution[]
 
-  @@unique([createdById, name])
   
   @@index([status])
   @@index([type])

@@ -9,16 +9,23 @@ if (!redisUrl) {
   throw new Error("REDIS_URL is not defined");
 }
 
-const connection: IORedis = new IORedis(redisUrl, {
+const redisOptions = {
   maxRetriesPerRequest: null,
   enableReadyCheck: false,
   enableOfflineQueue: true,
 
-  retryStrategy: (times) => Math.min(times * 50, 2000),
+  retryStrategy: (times: number) => Math.min(times * 50, 2000),
 
-  reconnectOnError: (err) =>
-    err.message.includes("READONLY"),
-});
+  reconnectOnError: (err: Error) => err.message.includes("READONLY"),
+};
+
+// BullMQ reads `url` and passes it as the first ioredis constructor arg.
+export const redisConnectionOptions = {
+  url: redisUrl,
+  ...redisOptions,
+};
+
+const connection = new IORedis(redisUrl, redisOptions);
 
 export { connection };
 
