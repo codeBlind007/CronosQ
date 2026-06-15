@@ -1,7 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// This is your Prisma schema file
 
 generator client {
   provider            = "prisma-client"
@@ -11,8 +8,12 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
+  provider = "postgresql"
 }
+
+//////////////////////////////////////////////////////
+// ENUMS
+//////////////////////////////////////////////////////
 
 enum UserRole {
   USER
@@ -33,9 +34,13 @@ enum JobType {
 }
 
 enum JobStatus {
-  ACTIVE
+  PENDING
+  QUEUED
+  RUNNING
   PAUSED
-  DISABLED
+  COMPLETED
+  FAILED
+  CANCELLED
 }
 
 enum JobPriority {
@@ -46,11 +51,9 @@ enum JobPriority {
 }
 
 enum ExecutionStatus {
-  QUEUED
   RUNNING
-  SUCCESS
+  COMPLETED
   FAILED
-  RETRYING
 }
 
 enum WorkerStatus {
@@ -63,52 +66,76 @@ enum NotificationType {
   WEBHOOK
 }
 
+//////////////////////////////////////////////////////
+// USER
+//////////////////////////////////////////////////////
+
 model User {
-  id          String   @id @default(uuid())
-  email       String   @unique
-  firstName   String?
-  lastName    String?
-  clerkId     String   @unique
-  imageUrl    String?
-  role        UserRole @default(USER)
+  id                    String   @id @default(uuid())
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  email                 String   @unique
 
-  accounts    Account[]
-  jobs        Job[]
-  auditLogs   AuditLog[]
-  notificationChannels NotificationChannel[]
+  firstName             String?
+
+  lastName              String?
+
+  clerkId               String   @unique
+
+  imageUrl              String?
+
+  role                  UserRole @default(USER)
+
+  createdAt             DateTime @default(now())
+
+  updatedAt             DateTime @updatedAt
+
+  accounts              Account[]
+
+  jobs                  Job[]
+
+  auditLogs             AuditLog[]
+
+  notificationChannels  NotificationChannel[]
 
   @@index([email])
 }
 
+//////////////////////////////////////////////////////
+// ACCOUNT
+//////////////////////////////////////////////////////
 
 model Account {
-  id                 String @id @default(uuid())
+  id                  String @id @default(uuid())
 
-  userId             String
-  user               User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId              String
 
-  provider           AuthProvider
+  user                User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  providerAccountId  String
+  provider            AuthProvider
 
-  createdAt          DateTime @default(now())
+  providerAccountId   String
+
+  createdAt           DateTime @default(now())
 
   @@unique([provider, providerAccountId])
+
   @@index([userId])
 }
+
+//////////////////////////////////////////////////////
+// JOB
+//////////////////////////////////////////////////////
 
 model Job {
   id                  String @id @default(uuid())
 
   name                String
+
   description         String?
 
   type                JobType
 
-  status              JobStatus @default(ACTIVE)
+  status              JobStatus @default(PENDING)
 
   priority            JobPriority @default(NORMAL)
 
@@ -122,110 +149,169 @@ model Job {
 
   scheduledAt         DateTime?
 
+  nextRunAt           DateTime?
+
+  lastRunAt           DateTime?
+
   maxRetries          Int @default(3)
 
   retryDelaySeconds   Int @default(60)
 
-  createdById         String
-  createdBy           User @relation(fields: [createdById], references: [id])
+  idempotencyKey      String? @unique
 
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  deadLettered        Boolean @default(false)
+
+  createdById         String
+
+  createdBy           User @relation(fields: [createdById], references: [id])
 
   executions          JobExecution[]
 
-  
+  createdAt           DateTime @default(now())
+
+  updatedAt           DateTime @updatedAt
+
   @@index([status])
+
   @@index([type])
+
   @@index([priority])
+
   @@index([createdById])
+
   @@index([scheduledAt])
+
+  @@index([nextRunAt])
+
+  @@index([queueName])
 }
+
+//////////////////////////////////////////////////////
+// JOB EXECUTION
+//////////////////////////////////////////////////////
 
 model JobExecution {
-  id              String @id @default(uuid())
+  id                String @id @default(uuid())
 
-  jobId           String
-  job             Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  jobId             String
 
-  status          ExecutionStatus
+  job               Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
-  attempt         Int @default(1)
+  status            ExecutionStatus
 
-  workerId        String?
-  worker          Worker? @relation(fields: [workerId], references: [id])
+  attempt           Int @default(1)
 
-  startedAt       DateTime?
+  bullJobId         String?
 
-  completedAt     DateTime?
+  workerId          String?
 
-  durationMs      Int?
+  worker            Worker? @relation(fields: [workerId], references: [id])
 
-  errorMessage    String?
+  startedAt         DateTime?
 
-  result          Json?
+  finishedAt        DateTime?
 
-  createdAt       DateTime @default(now())
+  durationMs        Int?
+
+  errorMessage      String?
+
+  result            Json?
+
+  createdAt         DateTime @default(now())
 
   @@index([jobId])
+
   @@index([status])
+
   @@index([workerId])
+
   @@index([createdAt])
+
+  @@index([bullJobId])
 }
 
+//////////////////////////////////////////////////////
+// WORKER
+//////////////////////////////////////////////////////
+
 model Worker {
+  id                String @id @default(uuid())
+
+  name              String
+
+  hostname          String?
+
+  pid               Int?
+
+  status            WorkerStatus @default(ACTIVE)
+
+  jobsProcessed     Int @default(0)
+
+  lastHeartbeat     DateTime?
+
+  startedAt         DateTime @default(now())
+
+  executions        JobExecution[]
+
+  @@index([status])
+
+  @@index([lastHeartbeat])
+}
+
+//////////////////////////////////////////////////////
+// NOTIFICATION CHANNEL
+//////////////////////////////////////////////////////
+
+model NotificationChannel {
   id              String @id @default(uuid())
+
+  userId          String
+
+  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   name            String
 
-  status          WorkerStatus @default(ACTIVE)
+  type            NotificationType
 
-  jobsProcessed   Int @default(0)
+  destination     String
 
-  lastHeartbeat   DateTime
+  enabled         Boolean @default(true)
 
-  startedAt       DateTime @default(now())
+  createdAt       DateTime @default(now())
 
-  executions      JobExecution[]
-
-  @@index([status])
-}
-
-model NotificationChannel {
-  id            String @id @default(uuid())
-
-  userId        String
-  user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  name          String
-
-  type          NotificationType
-
-  destination   String
-
-  enabled       Boolean @default(true)
-
-  createdAt     DateTime @default(now())
-}
-
-model AuditLog {
-  id            String @id @default(uuid())
-
-  userId        String?
-  user          User? @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-  action        String
-
-  entityType    String
-
-  entityId      String
-
-  metadata      Json?
-
-  createdAt     DateTime @default(now())
+  @@unique([userId, destination, type])
 
   @@index([userId])
+}
+
+//////////////////////////////////////////////////////
+// AUDIT LOG
+//////////////////////////////////////////////////////
+
+model AuditLog {
+  id              String @id @default(uuid())
+
+  userId          String?
+
+  user            User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  action          String
+
+  entityType      String
+
+  entityId        String
+
+  actorType       String?
+
+  metadata        Json?
+
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+
   @@index([entityType])
+
   @@index([entityId])
+
   @@index([createdAt])
 }
