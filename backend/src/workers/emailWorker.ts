@@ -1,6 +1,8 @@
 import { Worker } from "bullmq";
 import { redisConnectionOptions } from "../utils/redis";
 import { prisma } from "../utils/prisma";
+import { ExecutionStatus, JobStatus } from "../generated/prisma/enums";
+import emailProcessor from "../processors/email.processor";
 
 const emailWorker = new Worker(
   "emailQueue",
@@ -14,7 +16,7 @@ const emailWorker = new Worker(
         id: job.data.jobId,
       },
       data: {
-        status: "RUNNING",
+        status: JobStatus.RUNNING,
         lastRunAt: new Date(),
       },
     });
@@ -22,23 +24,28 @@ const emailWorker = new Worker(
     // Create execution record
     const execution = await prisma.jobExecution.create({
       data: {
-        jobId: job.data.jobId,
+        job: {
+          connect: {
+            id: job.data.jobId,
+          },
+        },
 
-        status: "RUNNING",
+        status: ExecutionStatus.RUNNING,
 
         attempt: job.attemptsMade + 1,
 
-        bullJobId: job.id?.toString(),
-
         startedAt: new Date(),
+
+        ...(job.id && {
+          bullJobId: job.id.toString(),
+        }),
       },
     });
 
     try {
       console.log("Processing email job");
 
-      // Simulate processing
-      console.log(job.data.payload);
+      await emailProcessor(job);
 
       // Simulate failure for testing retries
       if (job.data.payload?.simulateFailure) {
@@ -52,7 +59,7 @@ const emailWorker = new Worker(
         },
 
         data: {
-          status: "COMPLETED",
+          status: ExecutionStatus.COMPLETED,
 
           finishedAt: new Date(),
 
@@ -72,16 +79,14 @@ const emailWorker = new Worker(
         },
 
         data: {
-          status: "COMPLETED",
+          status: JobStatus.COMPLETED,
         },
       });
 
       return {
         success: true,
       };
-
     } catch (error: any) {
-
       // Update failed execution
       await prisma.jobExecution.update({
         where: {
@@ -89,7 +94,7 @@ const emailWorker = new Worker(
         },
 
         data: {
-          status: "FAILED",
+          status: ExecutionStatus.FAILED,
 
           finishedAt: new Date(),
 
@@ -101,21 +106,18 @@ const emailWorker = new Worker(
 
       // If retries are exhausted -> mark job failed
       if (job.attemptsMade + 1 >= job.opts.attempts!) {
-
         await prisma.job.update({
           where: {
             id: job.data.jobId,
           },
 
           data: {
-            status: "FAILED",
+            status: JobStatus.FAILED,
 
             deadLettered: true,
           },
         });
-
       } else {
-
         // Job will retry
         await prisma.job.update({
           where: {
@@ -123,7 +125,7 @@ const emailWorker = new Worker(
           },
 
           data: {
-            status: "QUEUED",
+            status: JobStatus.QUEUED,
           },
         });
       }
@@ -136,7 +138,7 @@ const emailWorker = new Worker(
     connection: redisConnectionOptions,
 
     concurrency: 5,
-  }
+  },
 );
 
 //////////////////////////////////////////////////////////
