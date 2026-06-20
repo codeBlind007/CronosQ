@@ -5,6 +5,7 @@ import { getQueueName } from "./jobs.utils";
 import queueService from "../../queues/queue.service"
 
 const createJob = async (jobData: JobUserBody, userId: string) => {
+    console.log("service: createJob");
     try{
         const job = await prisma.job.create({
             data: {

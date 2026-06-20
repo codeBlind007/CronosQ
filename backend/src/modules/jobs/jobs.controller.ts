@@ -6,7 +6,7 @@ const createJob: RequestHandler = async (req, res, next: NextFunction) => {
     try{
         const validatedData = req.body;
         const { userId } = req as AuthenticatedRequest;
-        console.log(validatedData);
+        console.log("controller: createJob");
         const job = await jobsService.createJob(validatedData, userId);
         
         if(!job){

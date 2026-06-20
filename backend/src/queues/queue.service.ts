@@ -3,6 +3,7 @@ import { AppError } from "../utils/AppError";
 import queueRegistry from "./queueRegistry";
 
 const scheduleJob = async (job: Job) => {
+  console.log("scheduleJob");
   try {
     const queue = queueRegistry[job.type as keyof typeof queueRegistry];
 
