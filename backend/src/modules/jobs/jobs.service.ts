@@ -1,12 +1,13 @@
 import { AppError } from "../../utils/AppError";
-import {prisma} from "../../utils/prisma";
+import { prisma } from "../../utils/prisma";
 import { JobUserBody } from "./jobs.types";
 import { getQueueName } from "./jobs.utils";
 import queueService from "../../queues/queue.service"
 
 const createJob = async (jobData: JobUserBody, userId: string) => {
     console.log("service: createJob");
-    try{
+    jobData.scheduledAt = new Date(Date.now() + 2 * 60 * 1000);
+    try {
         const job = await prisma.job.create({
             data: {
                 ...jobData,
@@ -21,7 +22,7 @@ const createJob = async (jobData: JobUserBody, userId: string) => {
 
         await queueService.scheduleJob(job);
         return job;
-    }catch(error){
+    } catch (error) {
         console.error(error);
         throw new AppError('Failed to create job', 500);
     }

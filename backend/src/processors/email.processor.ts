@@ -4,7 +4,7 @@ const emailProcessor = async (job: Job) => {
     console.log(`Processing email`);
     console.log("EMAIL");
 
-    console.log(job.data);
+    console.log("from processor: ", job.data);
 
     await new Promise(resolve =>
         setTimeout(resolve, 2000)
