@@ -1,17 +1,31 @@
 import { Job } from "bullmq";
+import { resend } from "../utils/resend";
+import {AppError} from "../utils/AppError";
+import { from } from "node:stream/iter";
+const fromEmail = process.env.RESEND_FROM_EMAIL || "";
+console.log(fromEmail);
 
 const emailProcessor = async (job: Job) => {
     console.log(`Processing email`);
     console.log("EMAIL");
+    const {payload} = job.data;
+    const {to, body, subject} = payload;
 
-    console.log("from processor: ", job.data);
+    const {data, error} = await resend.emails.send({
+        from : fromEmail,
+        to,
+        subject,
+        html: body
+    })
 
-    await new Promise(resolve =>
-        setTimeout(resolve, 2000)
-    );
+    if(error){
+        console.error(error);
+        throw new AppError("Failed to send email", 500);
+    }
 
     return {
-        sent: true
+        sent: true,
+        email: data?.id
     };
 };
 

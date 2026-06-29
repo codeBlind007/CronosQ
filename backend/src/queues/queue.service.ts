@@ -37,9 +37,6 @@ const scheduleJob = async (job: Job) => {
     const delayed = await queue.getDelayed();
     console.log("Delayed: ", delayed);
 
-    const completed = await queue.getCompleted();
-    console.log("Completed: ", completed);
-
   } catch (error) {
     console.error(error);
     throw new AppError("Failed to schedule job", 500);
