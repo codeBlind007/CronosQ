@@ -6,7 +6,6 @@ import queueService from "../../queues/queue.service"
 
 const createJob = async (jobData: JobUserBody, userId: string) => {
     console.log("service: createJob");
-    jobData.scheduledAt = new Date(Date.now() + 2 * 60 * 1000);
     try {
         const job = await prisma.job.create({
             data: {

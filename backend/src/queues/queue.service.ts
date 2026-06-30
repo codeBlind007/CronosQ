@@ -12,11 +12,15 @@ const scheduleJob = async (job: Job) => {
         500
       );
     }
-
+    console.log("scheduledAt:", job.scheduledAt);
+    console.log("Current:", new Date());
     const delay = job.scheduledAt
       ? Math.max(0, new Date(job.scheduledAt).getTime() - Date.now())
       : 0;
-
+    
+    
+    console.log("Computed delay:", delay);
+    
     await queue.add(
       job.name,
       {

@@ -10,37 +10,37 @@ const emailWorker = new Worker(
   async (job) => {
     const startTime = Date.now();
 
-    // Mark main job as RUNNING
-    await prisma.job.update({
-      where: {
-        id: job.data.jobId,
-      },
-      data: {
-        status: JobStatus.RUNNING,
-        lastRunAt: new Date(),
-      },
-    });
-
-    // Create execution record
-    const execution = await prisma.jobExecution.create({
-      data: {
-        job: {
-          connect: {
-            id: job.data.jobId,
-          },
+    const [, execution] = await Promise.all([
+      prisma.job.update({
+        where: {
+          id: job.data.jobId,
         },
+        data: {
+          status: JobStatus.RUNNING,
+          lastRunAt: new Date(),
+        },
+      }),
 
-        status: ExecutionStatus.RUNNING,
+      prisma.jobExecution.create({
+        data: {
+          job: {
+            connect: {
+              id: job.data.jobId,
+            },
+          },
 
-        attempt: job.attemptsMade + 1,
+          status: ExecutionStatus.RUNNING,
 
-        startedAt: new Date(),
+          attempt: job.attemptsMade + 1,
 
-        ...(job.id && {
-          bullJobId: job.id.toString(),
-        }),
-      },
-    });
+          startedAt: new Date(),
+
+          ...(job.id && {
+            bullJobId: job.id.toString(),
+          }),
+        },
+      }),
+    ]);
 
     try {
       console.log("Processing email job");
@@ -52,83 +52,82 @@ const emailWorker = new Worker(
         throw new Error("Intentional failure");
       }
 
-      // Update execution success
-      await prisma.jobExecution.update({
-        where: {
-          id: execution.id,
-        },
-
-        data: {
-          status: ExecutionStatus.COMPLETED,
-
-          finishedAt: new Date(),
-
-          durationMs: Date.now() - startTime,
-
-          result: {
-            success: true,
-            processedAt: new Date(),
+      await Promise.all([
+        prisma.jobExecution.update({
+          where: {
+            id: execution.id,
           },
-        },
-      });
 
-      // Update main job
-      await prisma.job.update({
-        where: {
-          id: job.data.jobId,
-        },
+          data: {
+            status: ExecutionStatus.COMPLETED,
 
-        data: {
-          status: JobStatus.COMPLETED,
-        },
-      });
+            finishedAt: new Date(),
+
+            durationMs: Date.now() - startTime,
+
+            result: {
+              success: true,
+              processedAt: new Date(),
+            },
+          },
+        }),
+
+        prisma.job.update({
+          where: {
+            id: job.data.jobId,
+          },
+
+          data: {
+            status: JobStatus.COMPLETED,
+          },
+        }),
+      ]);
 
       return {
         success: true,
       };
     } catch (error: any) {
-      // Update failed execution
-      await prisma.jobExecution.update({
-        where: {
-          id: execution.id,
-        },
+      const jobUpdate =
+        job.attemptsMade + 1 >= job.opts.attempts!
+          ? prisma.job.update({
+              where: {
+                id: job.data.jobId,
+              },
 
-        data: {
-          status: ExecutionStatus.FAILED,
+              data: {
+                status: JobStatus.FAILED,
+                deadLettered: true,
+              },
+            })
+          : prisma.job.update({
+              where: {
+                id: job.data.jobId,
+              },
 
-          finishedAt: new Date(),
+              data: {
+                status: JobStatus.QUEUED,
+              },
+            });
 
-          durationMs: Date.now() - startTime,
-
-          errorMessage: error.message,
-        },
-      });
-
-      // If retries are exhausted -> mark job failed
-      if (job.attemptsMade + 1 >= job.opts.attempts!) {
-        await prisma.job.update({
+      await Promise.all([
+        prisma.jobExecution.update({
           where: {
-            id: job.data.jobId,
+            id: execution.id,
           },
 
           data: {
-            status: JobStatus.FAILED,
+            status: ExecutionStatus.FAILED,
 
-            deadLettered: true,
-          },
-        });
-      } else {
-        // Job will retry
-        await prisma.job.update({
-          where: {
-            id: job.data.jobId,
-          },
+            finishedAt: new Date(),
 
-          data: {
-            status: JobStatus.QUEUED,
+            durationMs: Date.now() - startTime,
+
+            errorMessage: error.message,
           },
-        });
-      }
+        }),
+
+        jobUpdate,
+      ]);
 
       throw error;
     }
