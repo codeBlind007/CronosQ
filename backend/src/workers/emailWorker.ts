@@ -1,133 +1,39 @@
 import { Worker } from "bullmq";
 import { redisConnectionOptions } from "../utils/redis";
-import { prisma } from "../utils/prisma";
-import { ExecutionStatus, JobStatus } from "../generated/prisma/enums";
 import emailProcessor from "../processors/email.processor";
+import jobLifecycleService from "../services/jobLifecycle.services";
+import jobEventPublisher from "../events/job.events";
+import { JobType } from "../generated/prisma/enums";
 
 const emailWorker = new Worker(
   "emailQueue",
 
   async (job) => {
+
     const startTime = Date.now();
+    const execution = await jobLifecycleService.start(job);
 
-    const [, execution] = await Promise.all([
-      prisma.job.update({
-        where: {
-          id: job.data.jobId,
-        },
-        data: {
-          status: JobStatus.RUNNING,
-          lastRunAt: new Date(),
-        },
-      }),
-
-      prisma.jobExecution.create({
-        data: {
-          job: {
-            connect: {
-              id: job.data.jobId,
-            },
-          },
-
-          status: ExecutionStatus.RUNNING,
-
-          attempt: job.attemptsMade + 1,
-
-          startedAt: new Date(),
-
-          ...(job.id && {
-            bullJobId: job.id.toString(),
-          }),
-        },
-      }),
-    ]);
+    await jobEventPublisher.publishStarted(job, JobType.EMAIL);
 
     try {
       console.log("Processing email job");
 
       await emailProcessor(job);
 
-      // Simulate failure for testing retries
-      if (job.data.payload?.simulateFailure) {
-        throw new Error("Intentional failure");
-      }
-
-      await Promise.all([
-        prisma.jobExecution.update({
-          where: {
-            id: execution.id,
-          },
-
-          data: {
-            status: ExecutionStatus.COMPLETED,
-
-            finishedAt: new Date(),
-
-            durationMs: Date.now() - startTime,
-
-            result: {
-              success: true,
-              processedAt: new Date(),
-            },
-          },
-        }),
-
-        prisma.job.update({
-          where: {
-            id: job.data.jobId,
-          },
-
-          data: {
-            status: JobStatus.COMPLETED,
-          },
-        }),
-      ]);
+      await jobLifecycleService.complete(job, execution.id, startTime);
+      await jobEventPublisher.publishCompleted(job, JobType.EMAIL);
 
       return {
         success: true,
       };
     } catch (error: any) {
-      const jobUpdate =
-        job.attemptsMade + 1 >= job.opts.attempts!
-          ? prisma.job.update({
-              where: {
-                id: job.data.jobId,
-              },
-
-              data: {
-                status: JobStatus.FAILED,
-                deadLettered: true,
-              },
-            })
-          : prisma.job.update({
-              where: {
-                id: job.data.jobId,
-              },
-
-              data: {
-                status: JobStatus.QUEUED,
-              },
-            });
-
-      await Promise.all([
-        prisma.jobExecution.update({
-          where: {
-            id: execution.id,
-          },
-
-          data: {
-            status: ExecutionStatus.FAILED,
-
-            finishedAt: new Date(),
-
-            durationMs: Date.now() - startTime,
-
-            errorMessage: error.message,
-          },
-        }),
-
-        jobUpdate,
-      ]);
+      if (job.attemptsMade + 1 >= job.opts.attempts!) {
+        await jobLifecycleService.fail(job, execution.id, startTime, error as Error);
+        await jobEventPublisher.publishFailed(job, JobType.EMAIL, error as Error);
+      } else {
+        await jobLifecycleService.retry(job, execution.id, startTime, error as Error);
+        await jobEventPublisher.publishRetrying(job, JobType.EMAIL, error as Error);
+      }
 
       throw error;
     }

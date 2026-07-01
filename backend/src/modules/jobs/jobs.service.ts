@@ -1,6 +1,6 @@
 import { AppError } from "../../utils/AppError";
 import { prisma } from "../../utils/prisma";
-import { JobUserBody } from "./jobs.types";
+import { JobUserBody } from "../../types/jobTypes";
 import { getQueueName } from "./jobs.utils";
 import queueService from "../../queues/queue.service"
 

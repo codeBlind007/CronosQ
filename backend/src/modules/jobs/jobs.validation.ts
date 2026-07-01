@@ -1,5 +1,5 @@
 import { z } from "zod";
-import {JobType, JobPriority} from "./jobs.types";
+import {JobType, JobPriority} from "../../types/jobTypes";
 
 
 export const createJobSchema = z.object({
