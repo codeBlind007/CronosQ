@@ -12,7 +12,8 @@ function buildEvent(
   return {
     event,
     jobId: job.data.jobId,
-
+    userId: job.data.userId,
+    name: job.data.name,
     type,
 
     status,

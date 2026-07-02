@@ -26,6 +26,9 @@ const scheduleJob = async (job: Job) => {
       {
         jobId: job.id,
         payload: job.payload,
+        userId : job.createdById,
+        type: job.type,
+        name: job.name,
       },
       {
         jobId: job.id,
