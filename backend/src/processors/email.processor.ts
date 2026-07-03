@@ -1,7 +1,7 @@
 import { Job } from "bullmq";
 import { resend } from "../utils/resend";
 import {AppError} from "../utils/AppError";
-import { from } from "node:stream/iter";
+
 const fromEmail = process.env.RESEND_FROM_EMAIL || "";
 console.log(fromEmail);
 

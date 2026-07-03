@@ -3,6 +3,7 @@ import { redisConnectionOptions } from "../utils/redis";
 import jobLifecycleService from "../services/jobLifecycle.services";
 import jobEventPublisher from "../events/job.events";
 import { JobType } from "../generated/prisma/enums";
+import webhookProcessor from "../processors/webhook.processor";
 
 const webhookWorker = new Worker(
   "webhookQueue",
@@ -14,11 +15,11 @@ const webhookWorker = new Worker(
     try {
       console.log("Processing webhook job");
 
-      // webhookProcessor(job);
+      const result = await webhookProcessor(job);
 
       await Promise.all([
-        jobLifecycleService.complete(job, execution.id, startTime),
-        jobEventPublisher.publishCompleted(job, JobType.WEBHOOK),
+        jobLifecycleService.complete(job, execution.id, startTime, result),
+        jobEventPublisher.publishCompleted(job, JobType.WEBHOOK, result),
       ]);
     } catch (error: any) {
       if (job.attemptsMade + 1 >= job.opts.attempts!) {
@@ -60,3 +61,35 @@ const webhookWorker = new Worker(
     concurrency: 5,
   },
 );
+
+
+//////////////////////////////////////////////////////////
+// Worker Events
+//////////////////////////////////////////////////////////
+
+webhookWorker.on("completed", async (job) => {
+  console.log(`Job ${job.id} completed`);
+});
+
+webhookWorker.on("failed", async (job, err) => {
+  console.error(`Job ${job?.id} failed`);
+  console.error(err.message);
+});
+
+webhookWorker.on("error", (err) => {
+  console.error("Worker error:", err);
+});
+
+//////////////////////////////////////////////////////////
+// Graceful Shutdown
+//////////////////////////////////////////////////////////
+
+process.on("SIGINT", async () => {
+  console.log("Closing webhook worker...");
+
+  await webhookWorker.close();
+
+  process.exit(0);
+});
+
+export default webhookWorker;

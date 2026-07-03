@@ -34,11 +34,13 @@ async function publishStarted(job: Job, type: JobType) {
   );
 }
 
-async function publishCompleted(job: Job, type: JobType) {
+async function publishCompleted(job: Job, type: JobType, response?: any) {
   await publish(
     JOB_EVENTS_CHANNEL,
 
-    buildEvent(job, "JOB_COMPLETED", type, JobStatus.COMPLETED),
+    buildEvent(job, "JOB_COMPLETED", type, JobStatus.COMPLETED, {
+      response,
+    }),
   );
 }
 

@@ -1,31 +1,41 @@
-import {Job} from "bullmq"
+import axios from "axios";
+import { Job } from "bullmq";
+import {AppError} from "../utils/AppError";
 
-export const webhookProcessor = async (job: Job) => {
-    console.log(`Processing webhook`);
+const webhookProcessor = async (job: Job) => {
+    console.log("Processing webhook");
 
-    const {payload} = job.data;
-    const {url, method, headers, body} = payload;
+    const { payload } = job.data;
+    const { url, method = "POST", headers, body } = payload;
 
     try {
-        const response = await fetch(url, {
+        const response = await axios({
+            url,
             method,
             headers,
-            body: JSON.stringify(body)
+            data: body,
+            timeout: 10000,
         });
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error(`Webhook request failed with status ${response.status}: ${errorText}`);
-            throw new Error(`Webhook request failed with status ${response.status}`);
-        }
+        console.log("webhook response:", response.status, response.data);
 
         return {
             success: true,
-            response: await response.json()
+            status: response.status,
+            response: response.data,
+        };
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error(
+                `Webhook request failed: ${error.response?.status} ${error.response?.statusText}`
+            );
+            console.error("Response:", error.response?.data);
+        } else {
+            console.error("Unexpected error:", error);
         }
 
-    } catch (error) {
-        console.error(`Error processing webhook: ${error}`);
-        throw error;
+        throw new AppError("Failed to process webhook", 500);
     }
 };
+
+export default webhookProcessor;
