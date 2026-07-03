@@ -16,7 +16,7 @@ export function startJobSubscriber(io: Server) {
 
     const event = JSON.parse(message);
 
-    console.log(event);
+    console.log("from subscriber", event);
 
     io.to(event.userId).emit("job:update", event);
   });

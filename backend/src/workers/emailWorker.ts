@@ -12,7 +12,6 @@ const emailWorker = new Worker(
 
     const startTime = Date.now();
     const execution = await jobLifecycleService.start(job);
-
     await jobEventPublisher.publishStarted(job, JobType.EMAIL);
 
     try {
@@ -20,19 +19,25 @@ const emailWorker = new Worker(
 
       await emailProcessor(job);
 
-      await jobLifecycleService.complete(job, execution.id, startTime);
-      await jobEventPublisher.publishCompleted(job, JobType.EMAIL);
+      await Promise.all([
+        jobLifecycleService.complete(job, execution.id, startTime),
+        jobEventPublisher.publishCompleted(job, JobType.EMAIL)
+      ])
 
       return {
         success: true,
       };
     } catch (error: any) {
       if (job.attemptsMade + 1 >= job.opts.attempts!) {
-        await jobLifecycleService.fail(job, execution.id, startTime, error as Error);
-        await jobEventPublisher.publishFailed(job, JobType.EMAIL, error as Error);
+        await Promise.all([
+          await jobLifecycleService.fail(job, execution.id, startTime, error as Error),
+          await jobEventPublisher.publishFailed(job, JobType.EMAIL, error as Error)
+        ])
       } else {
-        await jobLifecycleService.retry(job, execution.id, startTime, error as Error);
-        await jobEventPublisher.publishRetrying(job, JobType.EMAIL, error as Error);
+        await Promise.all([
+          await jobLifecycleService.retry(job, execution.id, startTime, error as Error),
+          await jobEventPublisher.publishRetrying(job, JobType.EMAIL, error as Error)
+        ])
       }
 
       throw error;

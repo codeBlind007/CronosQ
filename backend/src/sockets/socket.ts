@@ -10,7 +10,11 @@ export function createSocket(httpServer: HttpServer) {
     },
   });
 
+  console.log("Socket.IO server initialized");
+
   io.use(authenticateSocket);
+
+  console.log("Socket.IO authentication middleware applied");
 
   io.on("connection", (socket) => {
 

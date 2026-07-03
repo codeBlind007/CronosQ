@@ -7,7 +7,7 @@ export async function authenticateSocket(
 ) {
   try {
     const token = socket.handshake.auth.token;
-
+    
     if (!token) {
       return next(new Error("Unauthorized"));
     }
@@ -15,7 +15,6 @@ export async function authenticateSocket(
     const payload = await verifyToken(token, {
       secretKey: process.env.CLERK_SECRET_KEY!,
     });
-
     socket.data.userId = payload.sub;
 
     next();
