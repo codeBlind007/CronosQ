@@ -30,13 +30,13 @@ const emailWorker = new Worker(
     } catch (error: any) {
       if (job.attemptsMade + 1 >= job.opts.attempts!) {
         await Promise.all([
-          await jobLifecycleService.fail(job, execution.id, startTime, error as Error),
-          await jobEventPublisher.publishFailed(job, JobType.EMAIL, error as Error)
+          jobLifecycleService.fail(job, execution.id, startTime, error as Error),
+          jobEventPublisher.publishFailed(job, JobType.EMAIL, error as Error)
         ])
       } else {
         await Promise.all([
-          await jobLifecycleService.retry(job, execution.id, startTime, error as Error),
-          await jobEventPublisher.publishRetrying(job, JobType.EMAIL, error as Error)
+          jobLifecycleService.retry(job, execution.id, startTime, error as Error),
+          jobEventPublisher.publishRetrying(job, JobType.EMAIL, error as Error)
         ])
       }
 

@@ -24,27 +24,23 @@ const webhookWorker = new Worker(
     } catch (error: any) {
       if (job.attemptsMade + 1 >= job.opts.attempts!) {
         await Promise.all([
-          await jobLifecycleService.fail(
+          jobLifecycleService.fail(
             job,
             execution.id,
             startTime,
             error as Error,
           ),
-          await jobEventPublisher.publishFailed(
-            job,
-            JobType.WEBHOOK,
-            error as Error,
-          ),
+          jobEventPublisher.publishFailed(job, JobType.WEBHOOK, error as Error),
         ]);
       } else {
         await Promise.all([
-          await jobLifecycleService.retry(
+          jobLifecycleService.retry(
             job,
             execution.id,
             startTime,
             error as Error,
           ),
-          await jobEventPublisher.publishRetrying(
+          jobEventPublisher.publishRetrying(
             job,
             JobType.WEBHOOK,
             error as Error,
@@ -61,7 +57,6 @@ const webhookWorker = new Worker(
     concurrency: 5,
   },
 );
-
 
 //////////////////////////////////////////////////////////
 // Worker Events
