@@ -13,7 +13,7 @@ const scheduleJob = async (job: Job) => {
       );
     }
     console.log("scheduledAt:", job.scheduledAt);
-    console.log("Current:", new Date());
+    
     const delay = job.scheduledAt
       ? Math.max(0, new Date(job.scheduledAt).getTime() - Date.now())
       : 0;

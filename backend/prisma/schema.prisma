@@ -61,9 +61,19 @@ enum WorkerStatus {
   OFFLINE
 }
 
-enum NotificationType {
+enum NotificationChannelType {
   EMAIL
+  SMS
   WEBHOOK
+  IN_APP
+}
+
+enum NotificationEventType {
+  REMINDER
+  JOB_COMPLETED
+  JOB_FAILED
+  JOB_RETRYING
+  SYSTEM
 }
 
 //////////////////////////////////////////////////////
@@ -96,6 +106,8 @@ model User {
   auditLogs             AuditLog[]
 
   notificationChannels  NotificationChannel[]
+
+  notifications         Notification[]
 
   @@index([email])
 }
@@ -166,6 +178,8 @@ model Job {
   createdBy           User @relation(fields: [createdById], references: [id])
 
   executions          JobExecution[]
+
+  notifications       Notification[]
 
   createdAt           DateTime @default(now())
 
@@ -271,7 +285,7 @@ model NotificationChannel {
 
   name            String
 
-  type            NotificationType
+  type            NotificationChannelType
 
   destination     String
 
@@ -282,6 +296,32 @@ model NotificationChannel {
   @@unique([userId, destination, type])
 
   @@index([userId])
+}
+
+model Notification {
+  id          String @id @default(uuid())
+
+  userId      String
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  jobId       String?
+  job         Job? @relation(fields: [jobId], references: [id], onDelete: SetNull)
+
+  title       String
+  message     String
+
+  type        NotificationEventType
+
+  isRead      Boolean @default(false)
+
+  metadata    Json?
+
+  createdAt   DateTime @default(now())
+  readAt      DateTime?
+
+  @@index([userId])
+  @@index([jobId])
+  @@index([userId, isRead])
 }
 
 //////////////////////////////////////////////////////

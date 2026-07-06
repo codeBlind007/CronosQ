@@ -3,11 +3,12 @@ import { redisConnectionOptions } from "../utils/redis";
 import jobLifecycleService from "../services/jobLifecycle.services";
 import jobEventPublisher from "../events/job.events";
 import { JobType } from "../generated/prisma/enums";
-import { AppError } from "../utils/AppError";
+import reminderProcessor from "../processors/reminder.processor";
 
 const reminderWorker = new Worker(
     "reminderQueue",
     async(job) => {
+        console.log("Reminder worker picked job:", job.id);
         const startTime = Date.now();
         const execution = await jobLifecycleService.start(job);
         await jobEventPublisher.publishStarted(job, JobType.REMINDER);
@@ -74,3 +75,5 @@ process.on("SIGINT", async () => {
 
   process.exit(0);
 });
+
+export default reminderWorker;
