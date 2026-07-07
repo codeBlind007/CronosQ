@@ -31,7 +31,7 @@ async function reminderProcessor(job: Job) {
 
     // Save in-app notification
     const notification = await notificationService.createNotification({
-      userId,
+      clerkId: userId,
       jobId,
       title,
       message,

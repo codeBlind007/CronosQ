@@ -27,8 +27,57 @@ const createJob = async (jobData: JobUserBody, userId: string) => {
     }
 }
 
+const getJobs = async(userId: string, queryObj?: any) => {
+    let {status, type, deadLettered, page} = queryObj || {};
+    console.log("service: getJobs", {status, type, deadLettered, page});
+    page = page ? parseInt(page) : 1;
+    const limit = 2;
+    const offset = (page - 1) * limit;
+    const jobs = await prisma.job.findMany({
+        where: {
+            createdBy: {
+                clerkId: userId
+            },
+            status: status ? status : undefined,
+            type: type ? type : undefined,
+            deadLettered: deadLettered !== undefined ? deadLettered : undefined
+        },
+        take: limit,
+        skip: offset,
+        orderBy: {
+            createdAt: 'desc'
+        }
+    });
+    return jobs;
+}
+
+const getJobById = async(jobId: string, userId: string) => {
+    const job = await prisma.job.findFirst({
+        where: {
+            id: jobId,
+            createdBy: {
+                clerkId: userId
+            }
+        }
+    });
+    return job;
+}
+
+const getNotifications = async(userId: string) => {
+    const notifications = await prisma.notification.findMany({
+        where: {
+            userId: userId 
+        }
+    });
+    console.log("service: getNotifications", notifications);
+    return notifications;
+}
+
 const jobsService = {
-    createJob
+    createJob,
+    getJobs,
+    getJobById,
+    getNotifications
 }
 
 export default jobsService;
