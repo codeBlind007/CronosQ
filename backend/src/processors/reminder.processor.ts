@@ -11,7 +11,8 @@ async function reminderProcessor(job: Job) {
 
     const { payload, userId, jobId } = job.data;
     const { title, message, channels } = payload;
-
+    console.log(`Reminder job data:`, userId);
+    
     if (channels?.includes("EMAIL")) {
       const user = await prisma.user.findUnique({
         where: {
@@ -31,7 +32,7 @@ async function reminderProcessor(job: Job) {
 
     // Save in-app notification
     const notification = await notificationService.createNotification({
-      clerkId: userId,
+      userId,
       jobId,
       title,
       message,

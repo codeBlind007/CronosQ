@@ -3,7 +3,7 @@ import {Request, Response, NextFunction, RequestHandler} from 'express';
 import {AppError} from '../utils/AppError';
 
 export interface AuthenticatedRequest extends Request {
-    userId : string;
+    clerkId : string;
 }
 
 export const authMiddleware: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
@@ -14,7 +14,7 @@ export const authMiddleware: RequestHandler = (req: Request, res: Response, next
             throw new AppError('Unauthorized', 401);
         }
 
-        (req as AuthenticatedRequest).userId = userId;
+        (req as AuthenticatedRequest).clerkId = userId;
 
         next();
     }catch(error){

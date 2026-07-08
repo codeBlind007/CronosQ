@@ -5,8 +5,9 @@ import jobsService from "./jobs.service";
 const createJob: RequestHandler = async (req, res, next: NextFunction) => {
   try {
     const validatedData = req.body;
-    const { userId } = req as AuthenticatedRequest;
-    const job = await jobsService.createJob(validatedData, userId);
+    const { clerkId } = req as AuthenticatedRequest;
+    console.log("controller: createJob", clerkId);
+    const job = await jobsService.createJob(validatedData, clerkId);
 
     console.log("controller: createJob", job);
 
@@ -28,10 +29,10 @@ const createJob: RequestHandler = async (req, res, next: NextFunction) => {
 
 const getJobs: RequestHandler = async (req, res, next: NextFunction) => {
   try {
-    const { userId } = req as AuthenticatedRequest;
+    const { clerkId } = req as AuthenticatedRequest;
     const queryObj = req.query;
     console.log("controller: ", queryObj);
-    const jobs = await jobsService.getJobs(userId, queryObj);
+    const jobs = await jobsService.getJobs(clerkId, queryObj);
     
     if (jobs.length === 0) {
       return res.status(404).json({
@@ -55,7 +56,7 @@ const getJobById: RequestHandler = async (req, res, next: NextFunction) => {
     const jobId = Array.isArray(req.params.jobId)
       ? req.params.jobId[0]
       : req.params.jobId;
-    const { userId } = req as AuthenticatedRequest;
+    const { clerkId } = req as AuthenticatedRequest;
 
     if (!jobId) {
       return res.status(400).json({
@@ -64,7 +65,7 @@ const getJobById: RequestHandler = async (req, res, next: NextFunction) => {
       });
     }
 
-    const job = await jobsService.getJobById(jobId, userId);
+    const job = await jobsService.getJobById(jobId, clerkId);
 
     if (!job) {
       return res.status(404).json({
@@ -84,9 +85,10 @@ const getJobById: RequestHandler = async (req, res, next: NextFunction) => {
 
 const getNotifications: RequestHandler = async (req, res, next: NextFunction) => {
   try {
-      const { userId } = req as AuthenticatedRequest;
-      console.log("controller: getNotifications", userId);
-    const notifications = await jobsService.getNotifications(userId);
+      const { clerkId } = req as AuthenticatedRequest;
+      console.log("controller: getNotifications", clerkId);
+      
+    const notifications = await jobsService.getNotifications(clerkId);
 
     if (notifications.length === 0) {
       return res.status(404).json({

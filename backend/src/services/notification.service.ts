@@ -2,7 +2,7 @@ import { prisma } from "../utils/prisma";
 import { NotificationEventType } from "../generated/prisma/enums";
 
 interface CreateNotificationInput {
-  clerkId: string;
+  userId: string;
   jobId?: string;
   title: string;
   message: string;
@@ -11,7 +11,7 @@ interface CreateNotificationInput {
 }
 
 const createNotification = async ({
-  clerkId,
+  userId,
   jobId,
   title,
   message,
@@ -20,12 +20,8 @@ const createNotification = async ({
 }: CreateNotificationInput) => {
   return prisma.notification.create({
     data: {
-      user: {
-        connect: {
-          clerkId,
-        },
-      },
-      ...(jobId !== undefined ? { job: { connect: { id: jobId } } } : {}),
+      userId,
+      ...(jobId !== undefined ? { jobId } : {}),
       title,
       message,
       type,

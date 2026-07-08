@@ -63,15 +63,18 @@ const getJobById = async(jobId: string, userId: string) => {
     return job;
 }
 
-const getNotifications = async(userId: string) => {
-    const notifications = await prisma.notification.findMany({
-        where: {
-            userId: userId 
-        }
-    });
-    console.log("service: getNotifications", notifications);
-    return notifications;
-}
+const getNotifications = async (clerkId: string) => {
+  return prisma.notification.findMany({
+    where: {
+      user: {
+        clerkId,
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+};
 
 const jobsService = {
     createJob,
