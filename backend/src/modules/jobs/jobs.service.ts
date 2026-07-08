@@ -28,11 +28,11 @@ const createJob = async (jobData: JobUserBody, userId: string) => {
 }
 
 const getJobs = async(userId: string, queryObj?: any) => {
-    let {status, type, deadLettered, page} = queryObj || {};
-    console.log("service: getJobs", {status, type, deadLettered, page});
+    let {status, type, deadLettered, page, limit} = queryObj || {};
+    console.log("service: getJobs", {status, type, deadLettered, page, limit});
     page = page ? parseInt(page) : 1;
-    const limit = 2;
-    const offset = (page - 1) * limit;
+    const parsedLimit = limit ? parseInt(limit) : 10;
+    const offset = (page - 1) * parsedLimit;
     const jobs = await prisma.job.findMany({
         where: {
             createdBy: {
@@ -42,7 +42,7 @@ const getJobs = async(userId: string, queryObj?: any) => {
             type: type ? type : undefined,
             deadLettered: deadLettered !== undefined ? deadLettered : undefined
         },
-        take: limit,
+        take: parsedLimit,
         skip: offset,
         orderBy: {
             createdAt: 'desc'
@@ -57,6 +57,13 @@ const getJobById = async(jobId: string, userId: string) => {
             id: jobId,
             createdBy: {
                 clerkId: userId
+            }
+        },
+        include: {
+            executions: {
+                orderBy: {
+                    createdAt: 'desc'
+                }
             }
         }
     });
@@ -76,11 +83,28 @@ const getNotifications = async (clerkId: string) => {
   });
 };
 
+
+const getNotificationById = async (notificationId: string, clerkId: string) => {
+    const notification = await prisma.notification.update({
+        where: {
+            id: notificationId,
+            user: {
+                clerkId,
+            },
+        },
+        data: {
+            isRead: true,
+        },
+    });
+    return notification;
+};
+
 const jobsService = {
     createJob,
     getJobs,
     getJobById,
-    getNotifications
+    getNotifications,
+    getNotificationById
 }
 
 export default jobsService;

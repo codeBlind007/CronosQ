@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { connectSocket, disconnectSocket } from "@/lib/socket";
+import { setAuthToken } from "@/services/api";
 
 export default function SocketProvider({
   children,
@@ -13,11 +14,17 @@ export default function SocketProvider({
 
   useEffect(() => {
     if (!isSignedIn) return;
-    console.log("Connecting socket...");
+
+    // Set Clerk token on Axios instance for every session
+    getToken().then((token) => {
+      setAuthToken(token);
+    });
+
     connectSocket(getToken);
 
     return () => {
       disconnectSocket();
+      setAuthToken(null);
     };
   }, [isSignedIn, getToken]);
 
