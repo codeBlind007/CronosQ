@@ -14,6 +14,7 @@ function buildEvent(
     jobId: job.data.jobId,
     userId: job.data.userId,
     name: job.data.name,
+    clerkId: job.data.clerkId,
     type,
 
     status,

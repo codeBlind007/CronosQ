@@ -4,7 +4,7 @@ import { JobUserBody } from "../../types/jobTypes";
 import { getQueueName } from "./jobs.utils";
 import queueService from "../../queues/queue.service"
 
-const createJob = async (jobData: JobUserBody, userId: string) => {
+const createJob = async (jobData: JobUserBody, clerkId: string) => {
     console.log("service: createJob");
     try {
         const job = await prisma.job.create({
@@ -13,13 +13,13 @@ const createJob = async (jobData: JobUserBody, userId: string) => {
                 queueName: getQueueName(jobData.type),
                 createdBy: {
                     connect: {
-                        clerkId: userId,
+                        clerkId: clerkId,
                     },
                 },
             }
         });
 
-        await queueService.scheduleJob(job);
+        await queueService.scheduleJob(job, clerkId);
         return job;
     } catch (error) {
         console.error(error);
@@ -30,9 +30,12 @@ const createJob = async (jobData: JobUserBody, userId: string) => {
 const getJobs = async(userId: string, queryObj?: any) => {
     let {status, type, deadLettered, page, limit} = queryObj || {};
     console.log("service: getJobs", {status, type, deadLettered, page, limit});
+
     page = page ? parseInt(page) : 1;
+
     const parsedLimit = limit ? parseInt(limit) : 10;
     const offset = (page - 1) * parsedLimit;
+
     const jobs = await prisma.job.findMany({
         where: {
             createdBy: {
@@ -40,7 +43,7 @@ const getJobs = async(userId: string, queryObj?: any) => {
             },
             status: status ? status : undefined,
             type: type ? type : undefined,
-            deadLettered: deadLettered !== undefined ? deadLettered : undefined
+            deadLettered: deadLettered !== undefined ? (deadLettered === 'true') : false
         },
         take: parsedLimit,
         skip: offset,

@@ -6,7 +6,7 @@ import { useJobSocket } from "@/hooks/useJobSocket";
 import { SearchBar } from "@/components/shared/SearchBar";
 import { JobFilters } from "@/components/jobs/JobFilters";
 import { JobTable } from "@/components/jobs/JobTable";
-import { CreateJobDialog } from "@/components/jobs/CreateJobDialog";
+import {CreateJobDialog} from "@/components/jobs/create-job-dialog/CreateJobDialog";
 import { Plus } from "lucide-react";
 import type { Job, JobStatus, JobType } from "@/types";
 

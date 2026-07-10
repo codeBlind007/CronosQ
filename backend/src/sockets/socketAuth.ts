@@ -15,6 +15,9 @@ export async function authenticateSocket(
     const payload = await verifyToken(token, {
       secretKey: process.env.CLERK_SECRET_KEY!,
     });
+
+    console.log("Socket authentication successful:", payload);
+
     socket.data.userId = payload.sub;
 
     next();

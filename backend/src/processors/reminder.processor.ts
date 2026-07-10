@@ -8,7 +8,7 @@ import notificationService from "../services/notification.service";
 async function reminderProcessor(job: Job) {
   try {
     console.log(`Processing reminder job with id: ${job.id}`);
-
+    console.log('reminder processor: ', job);
     const { payload, userId, jobId } = job.data;
     const { title, message, channels } = payload;
     console.log(`Reminder job data:`, userId);

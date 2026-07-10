@@ -4,11 +4,18 @@ import { Topbar } from "@/components/layout/Topbar";
 import { JobsClient } from "@/components/jobs/JobsClient";
 import type { Job } from "@/types";
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:8000";
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:8000";
 
 async function fetchInitialJobs(token: string | null): Promise<Job[]> {
   if (!token) return [];
   try {
+    console.log(
+      "fetchInitialJobs auth token present:",
+      Boolean(token),
+      "length:",
+      token.length,
+    );
     const res = await fetch(`${BACKEND_URL}/api/v1/jobs?limit=10`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -30,7 +37,12 @@ async function fetchInitialJobs(token: string | null): Promise<Job[]> {
 export default async function JobsPage() {
   const authSession = await auth();
   const token = await authSession.getToken();
-
+  console.log(
+    "JobsPage token present:",
+    Boolean(token),
+    "length:",
+    token?.length ?? 0,
+  );
   if (!authSession.userId) {
     redirect("/sign-in");
   }

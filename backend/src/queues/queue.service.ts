@@ -2,7 +2,7 @@ import { Job } from "../generated/prisma/client";
 import { AppError } from "../utils/AppError";
 import queueRegistry from "./queueRegistry";
 
-const scheduleJob = async (job: Job) => {
+const scheduleJob = async (job: Job, clerkId: string) => {
   try {
     const queue = queueRegistry[job.type as keyof typeof queueRegistry];
 
@@ -27,6 +27,7 @@ const scheduleJob = async (job: Job) => {
         jobId: job.id,
         payload: job.payload,
         userId : job.createdById,
+        clerkId: clerkId,
         type: job.type,
         name: job.name,
       },
