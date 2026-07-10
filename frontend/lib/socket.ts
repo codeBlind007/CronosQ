@@ -22,6 +22,10 @@ export async function connectSocket(getToken: () => Promise<string | null>) {
     console.error("Connection error:", err.message);
   });
 
+  socket.on("job:update", (event) => {
+    console.log("Job update received:", event);
+  });
+
   socket.on("disconnect", (reason) => {
     console.log("Disconnected:", reason);
   });

@@ -7,7 +7,7 @@ import { StatCard } from "@/components/shared/StatCard";
 import { RecentJobs } from "@/components/dashboard/RecentJobs";
 import { ActivityTimeline } from "@/components/dashboard/ActivityTimeline";
 import { ExecutionSummary } from "@/components/dashboard/ExecutionSummary";
-import { StatCardSkeleton, TableRowSkeleton } from "@/components/shared/LoadingSkeleton";
+import { StatCardSkeleton } from "@/components/shared/LoadingSkeleton";
 import { Play, CheckCircle2, AlertTriangle, Clock, Briefcase } from "lucide-react";
 import type { Job, Notification } from "@/types";
 

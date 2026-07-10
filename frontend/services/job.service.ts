@@ -7,13 +7,16 @@ import type {
   PaginatedJobsResponse,
 } from "@/types";
 
-export async function getJobs(filters?: JobFilters): Promise<PaginatedJobsResponse> {
+export async function getJobs(
+  filters?: JobFilters,
+): Promise<PaginatedJobsResponse> {
   const params: Record<string, string | number | boolean | undefined> = {};
   if (filters?.status) params.status = filters.status;
   if (filters?.type) params.type = filters.type;
   if (filters?.deadLettered !== undefined)
     params.deadLettered = filters.deadLettered;
   if (filters?.page) params.page = filters.page;
+  if (filters?.limit) params.limit = filters.limit;
 
   const { data } = await apiClient.get<PaginatedJobsResponse>("/jobs", {
     params,

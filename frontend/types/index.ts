@@ -147,6 +147,7 @@ export interface JobFilters {
   type?: JobType | "";
   deadLettered?: boolean;
   page?: number;
+  limit?: number;
 }
 
 // ──────────────────────────────────────────────

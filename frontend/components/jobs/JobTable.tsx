@@ -4,7 +4,6 @@ import React from "react";
 import Link from "next/link";
 import {
   ExternalLink,
-  ChevronRight,
   Skull,
 } from "lucide-react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -130,14 +129,14 @@ function JobTableRow({ job, index }: { job: Job; index: number }) {
       <td className="px-4 py-3">
         <div className="flex items-center gap-2">
           {job.deadLettered && (
-            <Skull size={12} className="text-red-400 flex-shrink-0" aria-label="Dead lettered" />
+            <Skull size={12} className="text-red-400 shrink-0" aria-label="Dead lettered" />
           )}
           <div>
-            <p className="font-medium text-zinc-200 truncate max-w-[180px]">
+            <p className="font-medium text-zinc-200 truncate max-w-45">
               {job.name}
             </p>
             {job.description && (
-              <p className="text-xs text-zinc-500 truncate max-w-[180px]">
+              <p className="text-xs text-zinc-500 truncate max-w-45">
                 {job.description}
               </p>
             )}

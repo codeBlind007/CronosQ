@@ -18,6 +18,6 @@ export function startJobSubscriber(io: Server) {
 
     console.log("from subscriber", event);
 
-    io.to(event.userId).emit("job:update", event);
+    io.to(event.clerkId).emit("job:update", event);
   });
 }

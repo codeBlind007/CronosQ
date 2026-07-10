@@ -1,7 +1,6 @@
 import { Server } from "socket.io";
 import { Server as HttpServer } from "http";
 import { authenticateSocket } from "./socketAuth";
-import {startJobSubscriber} from "../events/subscriber";
 export function createSocket(httpServer: HttpServer) {
   const io = new Server(httpServer, {
     cors: {
@@ -28,8 +27,6 @@ export function createSocket(httpServer: HttpServer) {
       console.log(`${userId} disconnected`);
     });
   });
-
-  startJobSubscriber(io);
 
   return io;
 }

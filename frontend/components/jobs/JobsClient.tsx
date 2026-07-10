@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { JobRealtimeFeed } from "@/components/jobs/JobRealtimeFeed";
 import { useJobs } from "@/hooks/useJobs";
 import { useJobSocket } from "@/hooks/useJobSocket";
 import { SearchBar } from "@/components/shared/SearchBar";
 import { JobFilters } from "@/components/jobs/JobFilters";
 import { JobTable } from "@/components/jobs/JobTable";
-import {CreateJobDialog} from "@/components/jobs/create-job-dialog/CreateJobDialog";
+import { CreateJobDialog } from "@/components/jobs/create-job-dialog/CreateJobDialog";
 import { Plus } from "lucide-react";
 import type { Job, JobStatus, JobType } from "@/types";
 
@@ -16,7 +17,7 @@ interface JobsClientProps {
 
 export function JobsClient({ initialJobs }: JobsClientProps) {
   // Real-time socket listener
-  useJobSocket();
+  const { recentEvents } = useJobSocket();
 
   const [openCreate, setOpenCreate] = useState(false);
   const [search, setSearch] = useState("");
@@ -38,9 +39,11 @@ export function JobsClient({ initialJobs }: JobsClientProps) {
     deadLettered,
     page,
     limit,
-  } as any);
+  });
 
-  const jobs = jobsData?.data ?? (page === 1 && !status && !type && !deadLettered ? initialJobs : []);
+  const jobs =
+    jobsData?.data ??
+    (page === 1 && !status && !type && !deadLettered ? initialJobs : []);
 
   // Filter jobs locally based on search query (name/description matching)
   const filteredJobs = jobs.filter((job) => {
@@ -57,58 +60,64 @@ export function JobsClient({ initialJobs }: JobsClientProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Filters and Search toolbar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3 flex-wrap">
-          <SearchBar
-            placeholder="Search jobs by name…"
-            value={search}
-            onChange={setSearch}
-            className="w-full sm:w-[260px]"
-          />
-          <JobFilters
-            status={status}
-            type={type}
-            deadLettered={deadLettered}
-            onStatusChange={(s) => {
-              setStatus(s);
-              setPage(1);
-            }}
-            onTypeChange={(t) => {
-              setType(t);
-              setPage(1);
-            }}
-            onDeadLetteredChange={(v) => {
-              setDeadLettered(v);
-              setPage(1);
-            }}
+      <div className="grid grid-cols-1 xl:grid-cols-[1.7fr_1fr] gap-6 items-start">
+        <div className="flex flex-col gap-6">
+          {/* Filters and Search toolbar */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3 flex-wrap">
+              <SearchBar
+                placeholder="Search jobs by name…"
+                value={search}
+                onChange={setSearch}
+                className="w-full sm:w-65"
+              />
+              <JobFilters
+                status={status}
+                type={type}
+                deadLettered={deadLettered}
+                onStatusChange={(s) => {
+                  setStatus(s);
+                  setPage(1);
+                }}
+                onTypeChange={(t) => {
+                  setType(t);
+                  setPage(1);
+                }}
+                onDeadLetteredChange={(v) => {
+                  setDeadLettered(v);
+                  setPage(1);
+                }}
+              />
+            </div>
+
+            <button
+              onClick={() => setOpenCreate(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer"
+            >
+              <Plus size={16} />
+              Create Job
+            </button>
+          </div>
+
+          {/* Main Jobs Table */}
+          <JobTable
+            jobs={filteredJobs}
+            isLoading={isLoading}
+            error={error instanceof Error ? error.message : null}
+            action={
+              <button
+                onClick={() => setOpenCreate(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors"
+              >
+                <Plus size={16} />
+                Create Job
+              </button>
+            }
           />
         </div>
 
-        <button
-          onClick={() => setOpenCreate(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer"
-        >
-          <Plus size={16} />
-          Create Job
-        </button>
+        <JobRealtimeFeed events={recentEvents} />
       </div>
-
-      {/* Main Jobs Table */}
-      <JobTable
-        jobs={filteredJobs}
-        isLoading={isLoading}
-        error={error instanceof Error ? error.message : null}
-        action={
-          <button
-            onClick={() => setOpenCreate(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors"
-          >
-            <Plus size={16} />
-            Create Job
-          </button>
-        }
-      />
 
       {/* Pagination Controls */}
       <div className="flex items-center justify-between px-2 text-sm text-zinc-500">
