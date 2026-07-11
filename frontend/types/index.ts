@@ -182,13 +182,13 @@ export interface NotificationSocketEvent {
 }
 
 // ──────────────────────────────────────────────
-// Dashboard stats (derived client-side)
+// Dashboard stats
 // ──────────────────────────────────────────────
 
 export interface DashboardStats {
-  total: number;
-  scheduled: number;
-  running: number;
-  completed: number;
-  failed: number;
+  totalJobs: number;
+  completedJobs: number;
+  failedJobs: number;
+  cancelledJobs: number;
+  pendingJobs: number;
 }

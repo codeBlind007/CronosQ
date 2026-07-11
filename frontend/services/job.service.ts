@@ -5,6 +5,7 @@ import type {
   JobFilters,
   ApiResponse,
   PaginatedJobsResponse,
+  DashboardStats,
 } from "@/types";
 
 export async function getJobs(
@@ -27,6 +28,12 @@ export async function getJobs(
 export async function getJobById(id: string): Promise<Job> {
   const { data } = await apiClient.get<ApiResponse<Job>>(`/jobs/${id}`);
   return data.data;
+}
+
+export async function getJobStats(): Promise<ApiResponse<DashboardStats>> {
+  const { data } =
+    await apiClient.get<ApiResponse<DashboardStats>>("/jobs/stats");
+  return data;
 }
 
 export async function createJob(payload: CreateJobInput): Promise<Job> {

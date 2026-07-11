@@ -83,70 +83,28 @@ const getJobById: RequestHandler = async (req, res, next: NextFunction) => {
   }
 };
 
-const getNotifications: RequestHandler = async (req, res, next: NextFunction) => {
-  try {
-      const { clerkId } = req as AuthenticatedRequest;
-      console.log("controller: getNotifications", clerkId);
-      
-    const notifications = await jobsService.getNotifications(clerkId);
-
-    if (notifications.length === 0) {
-      return res.status(404).json({
-        success: true,
-        message: "No notifications found",
-      });
-    }
+const getJobStats: RequestHandler = async(req, res, next: NextFunction) => {
+  try{
+    const { clerkId } = req as AuthenticatedRequest;
+    
+    const stats = await jobsService.jobStats(clerkId);
 
     return res.status(200).json({
       success: true,
-      results: notifications.length,
-      data: notifications,
+      data: stats,
     });
 
-  }catch (error) {
+  }catch(error){
     next(error);
   }
-}
+};
 
-const getNotificationById: RequestHandler = async (req, res, next: NextFunction) => {
-  try{
-    const {clerkId} = req as AuthenticatedRequest;
-    const notificationId = Array.isArray(req.params.notificationId)
-      ? req.params.notificationId[0]
-      : req.params.notificationId;
-
-    if(!notificationId){
-      return res.status(400).json({
-        success: false,
-        message: "Notification ID is required",
-      });
-    }
-
-    const notification = await jobsService.getNotificationById(notificationId, clerkId);
-
-    if(!notification){
-      return res.status(404).json({
-        success: false,
-        message: "Notification not found",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      data: notification,
-    })
-
-  }catch(error) {
-    next(error);
-  }
-}
 
 const jobsController = {
   createJob,
   getJobs,
   getJobById,
-  getNotifications,
-  getNotificationById
+  getJobStats
 };
 
 export default jobsController;

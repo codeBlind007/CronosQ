@@ -107,6 +107,7 @@ export function useJobSocket() {
 
       // Invalidate relevant caches
       queryClient.invalidateQueries({ queryKey: JOB_KEYS.all });
+      queryClient.invalidateQueries({ queryKey: JOB_KEYS.stats });
       if (event.jobId) {
         queryClient.invalidateQueries({
           queryKey: JOB_KEYS.detail(event.jobId),

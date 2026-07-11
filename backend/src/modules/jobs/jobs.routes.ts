@@ -7,7 +7,8 @@ import jobsController from "./jobs.controller";
 
 const router = Router();
 
-router.get("/notifications", authMiddleware, jobsController.getNotifications);
+
+router.get("/stats", authMiddleware, jobsController.getJobStats);
 router
   .post(
     "/",

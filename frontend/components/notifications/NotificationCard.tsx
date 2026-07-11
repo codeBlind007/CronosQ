@@ -60,7 +60,7 @@ export function NotificationCard({
 
   return (
     <Link
-      href={`/dashboard/notifications`}
+      href={`/dashboard/notifications/${notification.id}`}
       className={cn(
         "flex gap-3 transition-colors",
         compact ? "px-4 py-3" : "p-4",
