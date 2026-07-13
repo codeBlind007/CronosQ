@@ -10,30 +10,49 @@ export const APP_DESCRIPTION =
 
 export const JOB_STATUS_CONFIG: Record<
   JobStatus,
-  { label: string; color: string; bg: string }
+  { label: string; color: string; bg: string; border: string }
 > = {
   PENDING: {
     label: "Pending",
-    color: "text-yellow-400",
-    bg: "bg-yellow-400/10",
+    color: "text-[#F59E0B]",
+    bg: "bg-[#F59E0B]/10",
+    border: "border-[#F59E0B]/15",
   },
-  QUEUED: { label: "Queued", color: "text-blue-400", bg: "bg-blue-400/10" },
+  QUEUED: {
+    label: "Queued",
+    color: "text-[#6366F1]",
+    bg: "bg-[#6366F1]/10",
+    border: "border-[#6366F1]/15",
+  },
   RUNNING: {
     label: "Running",
-    color: "text-indigo-400",
-    bg: "bg-indigo-400/10",
+    color: "text-[#6366F1]",
+    bg: "bg-[#6366F1]/10",
+    border: "border-[#6366F1]/15",
   },
-  PAUSED: { label: "Paused", color: "text-zinc-400", bg: "bg-zinc-400/10" },
+  PAUSED: {
+    label: "Paused",
+    color: "text-[#A1A1AA]",
+    bg: "bg-white/[0.04]",
+    border: "border-white/[0.08]",
+  },
   COMPLETED: {
     label: "Completed",
-    color: "text-green-400",
-    bg: "bg-green-400/10",
+    color: "text-[#22C55E]",
+    bg: "bg-[#22C55E]/10",
+    border: "border-[#22C55E]/15",
   },
-  FAILED: { label: "Failed", color: "text-red-400", bg: "bg-red-400/10" },
+  FAILED: {
+    label: "Failed",
+    color: "text-[#EF4444]",
+    bg: "bg-[#EF4444]/10",
+    border: "border-[#EF4444]/15",
+  },
   CANCELLED: {
     label: "Cancelled",
-    color: "text-zinc-500",
-    bg: "bg-zinc-500/10",
+    color: "text-[#71717A]",
+    bg: "bg-white/[0.04]",
+    border: "border-white/[0.08]",
   },
 };
 
@@ -43,36 +62,41 @@ export const JOB_STATUS_CONFIG: Record<
 
 export const JOB_TYPE_CONFIG: Record<
   JobType,
-  { label: string; color: string; bg: string; icon: string }
+  { label: string; color: string; bg: string; border: string; icon: string }
 > = {
   EMAIL: {
     label: "Email",
-    color: "text-sky-400",
-    bg: "bg-sky-400/10",
+    color: "text-[#A1A1AA]",
+    bg: "bg-white/[0.04]",
+    border: "border-white/[0.08]",
     icon: "Mail",
   },
   WEBHOOK: {
     label: "Webhook",
-    color: "text-violet-400",
-    bg: "bg-violet-400/10",
+    color: "text-[#A1A1AA]",
+    bg: "bg-white/[0.04]",
+    border: "border-white/[0.08]",
     icon: "Webhook",
   },
   REMINDER: {
     label: "Reminder",
-    color: "text-amber-400",
-    bg: "bg-amber-400/10",
+    color: "text-[#A1A1AA]",
+    bg: "bg-white/[0.04]",
+    border: "border-white/[0.08]",
     icon: "Bell",
   },
   REPORT: {
     label: "Report",
-    color: "text-emerald-400",
-    bg: "bg-emerald-400/10",
+    color: "text-[#A1A1AA]",
+    bg: "bg-white/[0.04]",
+    border: "border-white/[0.08]",
     icon: "FileText",
   },
   CLEANUP: {
     label: "Cleanup",
-    color: "text-rose-400",
-    bg: "bg-rose-400/10",
+    color: "text-[#A1A1AA]",
+    bg: "bg-white/[0.04]",
+    border: "border-white/[0.08]",
     icon: "Trash2",
   },
 };

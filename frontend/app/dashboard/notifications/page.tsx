@@ -43,7 +43,7 @@ export default async function NotificationsPage() {
         title="Notifications"
         description="View system alerts, task statuses, and processing warnings."
       />
-      <div className="flex-1 p-6 max-w-4xl w-full mx-auto">
+      <div className="flex-1 p-10 max-w-4xl w-full mx-auto">
         <NotificationsClient initialNotifications={initialNotifications} />
       </div>
     </>

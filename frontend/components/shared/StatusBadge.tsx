@@ -14,19 +14,13 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium",
+        "inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium border transition-colors duration-150",
         config.color,
         config.bg,
+        config.border,
         className
       )}
     >
-      <span
-        className={cn(
-          "w-1.5 h-1.5 rounded-full",
-          status === "RUNNING" ? "animate-pulse" : "",
-          config.color.replace("text-", "bg-")
-        )}
-      />
       {config.label}
     </span>
   );

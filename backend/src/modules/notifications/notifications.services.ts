@@ -13,22 +13,30 @@ const getNotifications = async (clerkId: string) => {
   });
 };
 
-
 const getNotificationById = async (notificationId: string, clerkId: string) => {
-    const notification = await prisma.notification.update({
-        where: {
-            id: notificationId,
-            user: {
-                clerkId,
-            },
-        },
-        data: {
-            isRead: true,
-        },
-    });
-    return notification;
-};
+  const notification = await prisma.notification.findFirst({
+    where: {
+      id: notificationId,
+      user: {
+        clerkId,
+      },
+    },
+  });
 
+  if (!notification) {
+    return null;
+  }
+
+  return prisma.notification.update({
+    where: {
+      id: notification.id,
+    },
+    data: {
+      isRead: true,
+      readAt: new Date(),
+    },
+  });
+};
 
 const notificationsService = {
   getNotifications,

@@ -9,7 +9,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:800
 async function fetchServerNotification(id: string, token: string | null): Promise<Notification | null> {
   if (!token) return null;
   try {
-    const res = await fetch(`${BACKEND_URL}/api/v1/jobs/notifications/${id}`, {
+    const res = await fetch(`${BACKEND_URL}/api/v1/notifications/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -54,7 +54,7 @@ export default async function NotificationDetailsPage({ params }: PageProps) {
         title="Notification Details"
         description="Inspect notification parameters, channels, trigger timeline, and related background jobs."
       />
-      <div className="flex-1 p-6 max-w-4xl w-full mx-auto">
+      <div className="flex-1 p-10 max-w-4xl w-full mx-auto">
         <NotificationDetails notificationId={notificationId} initialNotification={notification} />
       </div>
     </>

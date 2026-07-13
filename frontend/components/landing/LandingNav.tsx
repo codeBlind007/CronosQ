@@ -5,53 +5,48 @@ import { Zap } from "lucide-react";
 import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
 
 const NAV_LINKS = [
+  { href: "#architecture", label: "Architecture" },
   { href: "#features", label: "Features" },
   { href: "#how-it-works", label: "How it works" },
-  { href: "#architecture", label: "Architecture" },
-  { href: "#why-cronosq", label: "Why CronosQ" },
+  { href: "#testimonials", label: "Testimonials" },
 ];
 
 export function LandingNav() {
   const { isLoaded, isSignedIn } = useUser();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-zinc-800/60 bg-[#09090B]/80 backdrop-blur-md">
-      <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-        {/* Logo */}
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/[0.08] bg-[#09090B]">
+      <div className="max-w-[1400px] mx-auto px-10 h-14 flex items-center justify-between">
         <Link
           href="/"
-          className="flex items-center gap-2 font-semibold text-zinc-100"
+          className="flex items-center gap-2 font-semibold text-[#FAFAFA]"
         >
-          <div className="p-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
-            <Zap size={14} className="text-indigo-400" />
-          </div>
+          <Zap size={16} className="text-[#6366F1]" />
           CronosQ
         </Link>
 
-        {/* Links */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-8">
           {NAV_LINKS.map(({ href, label }) => (
             <a
               key={href}
               href={href}
-              className="text-sm text-zinc-400 hover:text-zinc-200 transition-colors"
+              className="text-sm text-[#A1A1AA] hover:text-[#FAFAFA] transition-colors duration-150"
             >
               {label}
             </a>
           ))}
         </nav>
 
-        {/* Auth */}
         <div className="flex items-center gap-3">
           {isLoaded && !isSignedIn ? (
             <>
               <SignInButton mode="modal">
-                <button className="text-sm text-zinc-400 hover:text-zinc-200 transition-colors px-3 py-1.5 rounded-lg hover:bg-zinc-800">
+                <button className="text-sm text-[#A1A1AA] hover:text-[#FAFAFA] transition-colors duration-150 px-3 py-1.5 rounded-lg hover:bg-white/[0.04]">
                   Sign in
                 </button>
               </SignInButton>
               <SignUpButton mode="modal">
-                <button className="text-sm font-medium bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-1.5 rounded-lg transition-colors">
+                <button className="text-sm font-medium bg-[#6366F1] hover:bg-[#5558E3] hover:-translate-y-px text-white px-4 py-1.5 rounded-lg transition-all duration-150">
                   Get started
                 </button>
               </SignUpButton>
@@ -61,7 +56,7 @@ export function LandingNav() {
             <>
               <Link
                 href="/dashboard"
-                className="text-sm font-medium bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-1.5 rounded-lg transition-colors"
+                className="text-sm font-medium bg-[#6366F1] hover:bg-[#5558E3] hover:-translate-y-px text-white px-4 py-1.5 rounded-lg transition-all duration-150"
               >
                 Dashboard
               </Link>

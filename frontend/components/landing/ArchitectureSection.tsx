@@ -1,73 +1,70 @@
 "use client";
 
 import { Cpu, Database, RefreshCw, Zap } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 const ARCHITECTURE_NODES = [
   {
-    title: "Clerk Client / Frontend",
-    desc: "Next.js App router dashboard that triggers job dispatching and receives instant status notifications via Socket.IO Client.",
+    title: "Next.js Dashboard",
+    desc: "App router frontend that dispatches jobs and receives instant status updates via Socket.IO.",
     icon: Cpu,
-    color: "text-sky-400",
-    bg: "bg-sky-400/10",
   },
   {
-    title: "Express API gateway",
-    desc: "Validates inputs with Zod schemas, handles Clerk user authentication middleware, and schedules jobs onto respective Redis queues.",
+    title: "Express API Gateway",
+    desc: "Validates inputs with Zod, handles Clerk authentication, and schedules jobs onto Redis queues.",
     icon: Zap,
-    color: "text-indigo-400",
-    bg: "bg-indigo-400/10",
   },
   {
-    title: "Redis / BullMQ Stack",
-    desc: "A reliable Redis caching/queue engine executing BullMQ schedules, supporting retries, delayed delivery, and active workers polling.",
+    title: "Redis / BullMQ",
+    desc: "Reliable queue engine with retries, delayed delivery, and worker polling.",
     icon: Database,
-    color: "text-violet-400",
-    bg: "bg-violet-400/10",
   },
   {
     title: "Distributed Workers",
-    desc: "Isolated task execution threads processing Webhooks, Emails, and Reminders, publishing completion and error payloads.",
+    desc: "Isolated workers processing webhooks, emails, and reminders with completion payloads.",
     icon: RefreshCw,
-    color: "text-emerald-400",
-    bg: "bg-emerald-400/10",
   },
 ];
 
 export function ArchitectureSection() {
   return (
-    <section id="architecture" className="px-6 py-24 max-w-6xl mx-auto">
-      {/* Header */}
-      <div className="text-center mb-16">
-        <p className="text-xs text-indigo-400 font-medium uppercase tracking-widest mb-3">
-          Architecture
-        </p>
-        <h2 className="text-3xl md:text-4xl font-bold text-zinc-100 tracking-tight">
-          SaaS Architecture & Infrastructure
+    <section id="architecture" className="px-10 py-24 max-w-[1400px] mx-auto border-t border-white/[0.08]">
+      <div className="mb-16 max-w-[650px]">
+        <p className="text-sm text-[#71717A] mb-3">Architecture</p>
+        <h2 className="text-[32px] font-bold text-[#FAFAFA] tracking-tight leading-tight">
+          Built for production workloads
         </h2>
-        <p className="mt-4 text-zinc-400 text-base max-w-lg mx-auto">
-           Deep-dive into the technical workflow behind CronosQ&apos;s zero-downtime distributed stack.
+        <p className="mt-4 section-desc">
+          A distributed stack designed for zero-downtime job execution at scale.
         </p>
       </div>
 
-      {/* Architecture Timeline layout */}
-      <div className="relative border-l border-zinc-800/80 pl-6 ml-4 md:ml-8 max-w-3xl mx-auto flex flex-col gap-10">
-        {ARCHITECTURE_NODES.map(({ title, desc, icon: Icon, color, bg }, i) => (
-          <div key={title} className="relative group">
-            {/* Timeline node icon */}
-            <div
-              className={cn(
-                "absolute -left-[41px] top-0 p-1.5 rounded-lg border border-zinc-800 bg-zinc-950",
-                bg
+      {/* Pipeline preview */}
+      <div className="card p-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {ARCHITECTURE_NODES.map(({ title, icon: Icon }, i) => (
+            <div key={title} className="relative flex flex-col items-center text-center gap-3">
+              <div className="flex items-center justify-center size-10 rounded-lg bg-[#171A21] border border-white/[0.08]">
+                <Icon size={18} className="text-[#71717A]" />
+              </div>
+              <span className="text-sm font-medium text-[#FAFAFA]">{title}</span>
+              {i < ARCHITECTURE_NODES.length - 1 && (
+                <div className="hidden md:block absolute top-5 left-[calc(50%+28px)] w-[calc(100%-56px)] h-px bg-white/[0.08]" />
               )}
-            >
-              <Icon size={14} className={color} />
             </div>
+          ))}
+        </div>
+      </div>
 
-            {/* Content card */}
-            <div className="card p-5 card-hover flex flex-col gap-1">
-              <h3 className="text-sm font-semibold text-zinc-200">{title}</h3>
-              <p className="text-xs text-zinc-500 leading-relaxed mt-1">{desc}</p>
+      {/* Detailed nodes */}
+      <div className="relative border-l border-white/[0.08] pl-8 ml-2 max-w-2xl flex flex-col gap-8">
+        {ARCHITECTURE_NODES.map(({ title, desc, icon: Icon }) => (
+          <div key={title} className="relative">
+            <div className="absolute -left-[41px] top-1 flex items-center justify-center size-6 rounded-md bg-[#111318] border border-white/[0.08]">
+              <Icon size={12} className="text-[#71717A]" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <h3 className="text-sm font-semibold text-[#FAFAFA]">{title}</h3>
+              <p className="text-[15px] text-[#71717A] leading-relaxed">{desc}</p>
             </div>
           </div>
         ))}

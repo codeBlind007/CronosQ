@@ -17,7 +17,7 @@ export default async function SettingsPage() {
         title="Settings"
         description="Manage your profile, team account, and developer credentials."
       />
-      <div className="flex-1 p-6 max-w-4xl w-full mx-auto flex flex-col gap-6 fade-in">
+      <div className="flex-1 p-10 max-w-4xl w-full mx-auto flex flex-col gap-8">
         {/* Profile summary card */}
         <div className="card p-6 flex flex-col sm:flex-row items-center gap-4">
           {user?.imageUrl ? (

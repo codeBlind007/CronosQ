@@ -53,7 +53,7 @@ export default async function JobDetailsPage({ params }: PageProps) {
         title="Job Details"
         description="Inspect execution logs, parameters, and queue timeline."
       />
-      <div className="flex-1 p-6 max-w-7xl w-full mx-auto">
+      <div className="flex-1 p-10 max-w-[1400px] w-full mx-auto">
         <JobDetailsClient jobId={jobId} initialJob={job} />
       </div>
     </>

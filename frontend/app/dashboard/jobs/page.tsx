@@ -55,7 +55,7 @@ export default async function JobsPage() {
         title="Jobs"
         description="Configure webhooks, email schedules, and custom recurring workers."
       />
-      <div className="flex-1 p-6 max-w-7xl w-full mx-auto">
+      <div className="flex-1 p-10 max-w-[1400px] w-full mx-auto">
         <JobsClient initialJobs={initialJobs} />
       </div>
     </>

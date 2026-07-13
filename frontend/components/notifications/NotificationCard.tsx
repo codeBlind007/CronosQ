@@ -39,11 +39,31 @@ const TYPE_CONFIG: Record<
   NotificationEventType,
   { icon: ElementType; color: string; bg: string }
 > = {
-  JOB_COMPLETED: { icon: CheckCircle, color: "text-green-400", bg: "bg-green-400/10" },
-  JOB_FAILED: { icon: XCircle, color: "text-red-400", bg: "bg-red-400/10" },
-  JOB_RETRYING: { icon: RefreshCw, color: "text-yellow-400", bg: "bg-yellow-400/10" },
-  REMINDER: { icon: Bell, color: "text-indigo-400", bg: "bg-indigo-400/10" },
-  SYSTEM: { icon: AlertCircle, color: "text-zinc-400", bg: "bg-zinc-400/10" },
+  JOB_COMPLETED: {
+    icon: CheckCircle,
+    color: "text-[#22C55E]",
+    bg: "bg-[#22C55E]/10",
+  },
+  JOB_FAILED: {
+    icon: XCircle,
+    color: "text-[#EF4444]",
+    bg: "bg-[#EF4444]/10",
+  },
+  JOB_RETRYING: {
+    icon: RefreshCw,
+    color: "text-[#F59E0B]",
+    bg: "bg-[#F59E0B]/10",
+  },
+  REMINDER: {
+    icon: Bell,
+    color: "text-[#6366F1]",
+    bg: "bg-[#6366F1]/10",
+  },
+  SYSTEM: {
+    icon: AlertCircle,
+    color: "text-[#71717A]",
+    bg: "bg-white/[0.04]",
+  },
 };
 
 interface NotificationCardProps {
@@ -62,17 +82,14 @@ export function NotificationCard({
     <Link
       href={`/dashboard/notifications/${notification.id}`}
       className={cn(
-        "flex gap-3 transition-colors",
-        compact ? "px-4 py-3" : "p-4",
-        !notification.isRead
-          ? "bg-indigo-500/5 border-l-2 border-indigo-500"
-          : "border-l-2 border-transparent",
-        "hover:bg-zinc-800/40"
+        "flex gap-4 transition-colors duration-150 hover:bg-[#171A21]",
+        compact ? "px-6 py-4" : "p-6",
+        !notification.isRead && "bg-[#6366F1]/5"
       )}
     >
       <div
         className={cn(
-          "flex h-8 w-8 items-center justify-center rounded-full",
+          "flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.08]",
           config.bg
         )}
       >
@@ -84,23 +101,25 @@ export function NotificationCard({
           <p
             className={cn(
               "text-sm leading-snug truncate",
-              notification.isRead ? "text-zinc-400" : "text-zinc-100 font-medium"
+              notification.isRead
+                ? "text-[#A1A1AA]"
+                : "text-[#FAFAFA] font-medium"
             )}
           >
             {notification.title}
           </p>
           {!notification.isRead && (
-            <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5" />
+            <span className="flex-shrink-0 size-1.5 rounded-full bg-[#6366F1] mt-1.5" />
           )}
         </div>
 
         {!compact && (
-          <p className="text-xs text-zinc-500 mt-0.5 line-clamp-2">
+          <p className="text-sm text-[#71717A] mt-1 line-clamp-2">
             {notification.message}
           </p>
         )}
 
-        <p className="text-xs text-zinc-600 mt-1">
+        <p className="text-xs text-[#71717A] mt-1.5">
           {formatRelativeDate(notification.createdAt)}
         </p>
       </div>

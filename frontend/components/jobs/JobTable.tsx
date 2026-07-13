@@ -2,10 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import {
-  ExternalLink,
-  Skull,
-} from "lucide-react";
+import { ExternalLink, Skull } from "lucide-react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { PriorityBadge } from "@/components/shared/PriorityBadge";
 import { JobTypeBadge } from "@/components/shared/JobTypeBadge";
@@ -49,10 +46,7 @@ export function JobTable({
   if (error) {
     return (
       <div className="card">
-        <EmptyState
-          title="Failed to load jobs"
-          description={error}
-        />
+        <EmptyState title="Failed to load jobs" description={error} />
       </div>
     );
   }
@@ -78,8 +72,8 @@ export function JobTable({
             <JobTableHead />
           </thead>
           <tbody>
-            {jobs.map((job, i) => (
-              <JobTableRow key={job.id} job={job} index={i} />
+            {jobs.map((job) => (
+              <JobTableRow key={job.id} job={job} />
             ))}
           </tbody>
         </table>
@@ -90,12 +84,12 @@ export function JobTable({
 
 function JobTableHead() {
   return (
-    <tr className="border-b border-zinc-800/60">
+    <tr className="border-b border-white/[0.08]">
       {["Name", "Type", "Status", "Priority", "Schedule", "Created", ""].map(
         (h) => (
           <th
             key={h}
-            className="px-4 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider whitespace-nowrap"
+            className="px-5 py-3.5 text-left text-xs font-medium text-[#71717A] uppercase tracking-wider whitespace-nowrap"
           >
             {h}
           </th>
@@ -105,7 +99,7 @@ function JobTableHead() {
   );
 }
 
-function JobTableRow({ job, index }: { job: Job; index: number }) {
+function JobTableRow({ job }: { job: Job }) {
   const createdAtLabel = (() => {
     const diffMs = Date.now() - new Date(job.createdAt).getTime();
     const diffMinutes = Math.floor(diffMs / 60000);
@@ -121,22 +115,22 @@ function JobTableRow({ job, index }: { job: Job; index: number }) {
   })();
 
   return (
-    <tr
-      className="border-b border-zinc-800/40 hover:bg-zinc-800/20 transition-colors"
-      style={{ animationDelay: `${index * 30}ms` }}
-    >
-      {/* Name */}
-      <td className="px-4 py-3">
+    <tr className="border-b border-white/[0.06] hover:bg-[#171A21]/50 transition-colors duration-150">
+      <td className="px-5 py-3.5">
         <div className="flex items-center gap-2">
           {job.deadLettered && (
-            <Skull size={12} className="text-red-400 shrink-0" aria-label="Dead lettered" />
+            <Skull
+              size={12}
+              className="text-[#EF4444] shrink-0"
+              aria-label="Dead lettered"
+            />
           )}
           <div>
-            <p className="font-medium text-zinc-200 truncate max-w-45">
+            <p className="font-medium text-[#FAFAFA] truncate max-w-45">
               {job.name}
             </p>
             {job.description && (
-              <p className="text-xs text-zinc-500 truncate max-w-45">
+              <p className="text-xs text-[#71717A] truncate max-w-45 mt-0.5">
                 {job.description}
               </p>
             )}
@@ -144,44 +138,38 @@ function JobTableRow({ job, index }: { job: Job; index: number }) {
         </div>
       </td>
 
-      {/* Type */}
-      <td className="px-4 py-3">
+      <td className="px-5 py-3.5">
         <JobTypeBadge type={job.type} />
       </td>
 
-      {/* Status */}
-      <td className="px-4 py-3">
+      <td className="px-5 py-3.5">
         <StatusBadge status={job.status} />
       </td>
 
-      {/* Priority */}
-      <td className="px-4 py-3">
+      <td className="px-5 py-3.5">
         <PriorityBadge priority={job.priority} />
       </td>
 
-      {/* Schedule */}
-      <td className="px-4 py-3 text-zinc-400 whitespace-nowrap">
+      <td className="px-5 py-3.5 text-[#A1A1AA] whitespace-nowrap">
         {job.isRecurring ? (
-          <span className="font-mono text-xs text-indigo-400">
+          <span className="font-mono text-xs text-[#6366F1]">
             {job.cronExpression ?? "Recurring"}
           </span>
         ) : job.scheduledAt ? (
           <span className="text-xs">{formatDateTime(job.scheduledAt)}</span>
         ) : (
-          <span className="text-xs text-zinc-600">Immediate</span>
+          <span className="text-xs text-[#71717A]">Immediate</span>
         )}
       </td>
 
-      {/* Created */}
-      <td className="px-4 py-3 text-xs text-zinc-500 whitespace-nowrap">
+      <td className="px-5 py-3.5 text-xs text-[#71717A] whitespace-nowrap">
         {createdAtLabel}
       </td>
 
-      {/* Actions */}
-      <td className="px-4 py-3">
+      <td className="px-5 py-3.5">
         <Link
           href={`/dashboard/jobs/${job.id}`}
-          className="inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-indigo-400 transition-colors"
+          className="inline-flex items-center gap-1 text-xs text-[#71717A] hover:text-[#6366F1] transition-colors duration-150"
           aria-label={`View job ${job.name}`}
         >
           <ExternalLink size={13} />

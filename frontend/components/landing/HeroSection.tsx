@@ -1,34 +1,45 @@
 import Link from "next/link";
 import { ArrowRight, ExternalLink } from "lucide-react";
 
+const HERO_FEATURES = [
+  {
+    title: "Retry with backoff",
+    description:
+      "Failed jobs retry automatically with configurable delay and attempt limits.",
+  },
+  {
+    title: "Real-time monitoring",
+    description:
+      "Socket.IO pushes status changes to your dashboard — no polling required.",
+  },
+  {
+    title: "Full audit trail",
+    description:
+      "Every execution logged with attempt counts, timestamps, and error details.",
+  },
+];
+
 export function HeroSection() {
   return (
-    <section className="min-h-[90vh] flex flex-col items-center justify-center px-6 pt-20 pb-16 text-center">
-      {/* Badge */}
-      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/20 bg-indigo-500/5 text-indigo-400 text-xs font-medium mb-8">
-        <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
-        Distributed · Reliable · Production-ready
-      </div>
+    <section className="max-w-[1400px] mx-auto px-10 pt-32 pb-24">
+      <p className="text-sm text-[#71717A] mb-6">
+        Distributed job scheduling
+      </p>
 
-      {/* Headline */}
-      <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-zinc-100 max-w-3xl leading-[1.1]">
-        Reliable Distributed
-        <br />
-        <span className="text-indigo-400">Job Scheduling</span>
+      <h1 className="text-[48px] md:text-[56px] font-bold tracking-tight text-[#FAFAFA] max-w-[650px] leading-[1.1]">
+        Reliable job scheduling for production systems
       </h1>
 
-      {/* Subheading */}
-      <p className="mt-6 text-lg text-zinc-400 max-w-xl leading-relaxed">
+      <p className="mt-6 text-[17px] text-[#A1A1AA] max-w-[650px] leading-relaxed">
         Schedule emails, fire webhooks, and send reminders with full retry
         handling, real-time monitoring, and execution history — all in one
         platform.
       </p>
 
-      {/* CTAs */}
       <div className="flex items-center gap-4 mt-10">
         <Link
           href="/sign-up"
-          className="flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl transition-colors text-sm"
+          className="flex items-center gap-2 px-5 py-2.5 bg-[#6366F1] hover:bg-[#5558E3] hover:-translate-y-px text-white font-medium rounded-lg transition-all duration-150 text-sm"
         >
           Get Started
           <ArrowRight size={16} />
@@ -37,24 +48,24 @@ export function HeroSection() {
           href="https://github.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 px-6 py-3 border border-zinc-700 hover:border-zinc-600 text-zinc-300 hover:text-zinc-100 font-medium rounded-xl transition-colors text-sm bg-zinc-900 hover:bg-zinc-800"
+          className="flex items-center gap-2 px-5 py-2.5 border border-white/[0.08] bg-[#111318] hover:bg-[#171A21] hover:-translate-y-px text-[#FAFAFA] font-medium rounded-lg transition-all duration-150 text-sm"
         >
           <ExternalLink size={16} />
           GitHub
         </a>
       </div>
 
-      {/* Stats */}
-      <div className="flex items-center gap-8 mt-16 text-sm text-zinc-600">
-        {[
-          ["3 job types", "Email, Webhook, Reminder"],
-          ["Real-time", "Socket.IO updates"],
-          ["Retry logic", "Configurable backoff"],
-          ["Queue-based", "BullMQ + Redis"],
-        ].map(([label, desc]) => (
-          <div key={label} className="flex flex-col items-center gap-0.5">
-            <span className="text-zinc-300 font-medium">{label}</span>
-            <span className="text-zinc-600 text-xs">{desc}</span>
+      {/* Feature cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-20">
+        {HERO_FEATURES.map(({ title, description }) => (
+          <div
+            key={title}
+            className="card card-hover p-6 flex flex-col gap-2"
+          >
+            <h3 className="text-sm font-semibold text-[#FAFAFA]">{title}</h3>
+            <p className="text-[15px] text-[#71717A] leading-relaxed">
+              {description}
+            </p>
           </div>
         ))}
       </div>

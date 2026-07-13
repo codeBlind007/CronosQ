@@ -1,44 +1,38 @@
 import Link from "next/link";
-import { ExternalLink, FileText, User } from "lucide-react";
+import { ExternalLink, FileText } from "lucide-react";
 
 export function FooterSection() {
   return (
-    <footer className="border-t border-zinc-900 bg-zinc-950 px-6 py-12 text-zinc-500">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-        {/* Logo / Title */}
+    <footer className="border-t border-white/[0.08] bg-[#09090B] px-10 py-12">
+      <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex flex-col items-center md:items-start gap-1">
-          <span className="text-sm font-semibold text-zinc-300">CronosQ</span>
-          <span className="text-xs text-zinc-600">
+          <span className="text-sm font-semibold text-[#FAFAFA]">CronosQ</span>
+          <span className="text-sm text-[#71717A]">
             Reliable distributed job scheduling.
           </span>
         </div>
 
-        {/* Links */}
-        <div className="flex items-center gap-6 text-sm">
+        <div className="flex items-center gap-8 text-sm">
           <a
             href="https://github.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 hover:text-zinc-300 transition-colors"
+            className="flex items-center gap-1.5 text-[#71717A] hover:text-[#FAFAFA] transition-colors duration-150"
           >
             <ExternalLink size={14} />
             GitHub
           </a>
           <Link
             href="/docs"
-            className="flex items-center gap-1.5 hover:text-zinc-300 transition-colors"
+            className="flex items-center gap-1.5 text-[#71717A] hover:text-[#FAFAFA] transition-colors duration-150"
           >
             <FileText size={14} />
             Documentation
           </Link>
-          <span className="flex items-center gap-1.5 text-zinc-600">
-            <User size={14} />
-            Author: CronosQ Dev Team
-          </span>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto mt-8 pt-8 border-t border-zinc-900 text-center md:text-left text-xs text-zinc-700">
+      <div className="max-w-[1400px] mx-auto mt-8 pt-8 border-t border-white/[0.08] text-center md:text-left text-sm text-[#71717A]">
         &copy; {new Date().getFullYear()} CronosQ. All rights reserved.
       </div>
     </footer>
