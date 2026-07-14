@@ -65,11 +65,35 @@ async function publishFailed(job: Job, type: JobType, error: Error) {
   );
 }
 
+async function publishJobNotificationCompleted(job: Job, type: JobType, notificationType: string, message: string) {
+  await publish(
+    JOB_EVENTS_CHANNEL,
+
+    buildEvent(job, "JOB_NOTIFICATION", type, JobStatus.COMPLETED, {
+      notificationType,
+      message,
+    }),
+  );
+}
+
+async function publishJobNotificationFailed(job: Job, type: JobType, notificationType: string, message: string) {
+  await publish(
+    JOB_EVENTS_CHANNEL, 
+
+    buildEvent(job, "JOB_NOTIFICATION_FAILED", type, JobStatus.FAILED, {
+      notificationType,
+      message,
+    }),
+  );
+}
+
 const jobEventPublisher = {
   publishStarted,
   publishCompleted,
   publishRetrying,
   publishFailed,
+  publishJobNotificationCompleted,
+  publishJobNotificationFailed,
 };
 
 export default jobEventPublisher;
