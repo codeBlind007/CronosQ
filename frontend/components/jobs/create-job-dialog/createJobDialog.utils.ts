@@ -14,9 +14,8 @@ export function buildCreateJobInput({
     payload,
     maxRetries: step3.maxRetries,
     retryDelaySeconds: step3.retryDelaySeconds,
-    isRecurring: step3.scheduleType === "recurring",
-    cronExpression:
-      step3.scheduleType === "recurring" ? step3.cronExpression : undefined,
+    isRecurring: false,
+    cronExpression: undefined,
     scheduledAt:
       step3.scheduleType === "scheduled" ? step3.scheduledAt : undefined,
   };

@@ -29,9 +29,8 @@ export const reminderPayloadSchema = z.object({
 });
 
 export const step3Schema = z.object({
-  scheduleType: z.enum(["immediate", "scheduled", "recurring"]),
+  scheduleType: z.enum(["immediate", "scheduled"]),
   scheduledAt: z.string().optional(),
-  cronExpression: z.string().optional(),
   priority: z.enum(["LOW", "NORMAL", "HIGH", "CRITICAL"]).default("NORMAL"),
   maxRetries: z.coerce.number().int().min(0).max(10).default(3),
   retryDelaySeconds: z.coerce.number().int().min(1).max(86400).default(60),

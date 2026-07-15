@@ -50,6 +50,14 @@ const EVENT_MAP: Record<
   JOB_CANCELLED: { label: "Job cancelled", variant: "warning" },
   JOB_PAUSED: { label: "Job paused", variant: "default" },
   JOB_RESUMED: { label: "Job resumed", variant: "default" },
+  JOB_COMPLETED_NOTIFICATION: {
+    label: "",
+    variant: "error"
+  },
+  JOB_FAILED_NOTIFICATION: {
+    label: "",
+    variant: "error"
+  }
 };
 
 export function useJobSocket() {
@@ -92,6 +100,14 @@ export function useJobSocket() {
     if (!socket) return;
 
     const handleJobEvent = (event: JobSocketPayload) => {
+      if (
+        event.event === "JOB_COMPLETED_NOTIFICATION" ||
+        event.event === "JOB_FAILED_NOTIFICATION"
+      ) {
+        queryClient.invalidateQueries({ queryKey: NOTIFICATION_KEYS.all });
+        return; // UI for this is handled by NotificationBell component
+      }
+
       const config = EVENT_MAP[event.event] ?? {
         label: event.event,
         variant: "default" as const,

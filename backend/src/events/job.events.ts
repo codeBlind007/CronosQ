@@ -65,23 +65,23 @@ async function publishFailed(job: Job, type: JobType, error: Error) {
   );
 }
 
-async function publishJobNotificationCompleted(job: Job, type: JobType, notificationType: string, message: string) {
+async function publishJobNotificationCompleted(job: Job, type: JobType, message: string) {
+  console.log("Publishing job notification completed event for job:", job.id);
   await publish(
     JOB_EVENTS_CHANNEL,
 
-    buildEvent(job, "JOB_NOTIFICATION", type, JobStatus.COMPLETED, {
-      notificationType,
+    buildEvent(job, "JOB_COMPLETED_NOTIFICATION", type, JobStatus.COMPLETED, {
       message,
     }),
   );
 }
 
-async function publishJobNotificationFailed(job: Job, type: JobType, notificationType: string, message: string) {
+async function publishJobNotificationFailed(job: Job, type: JobType, message: string) {
+  console.log("Publishing job notification failed event for job:", job.id);
   await publish(
     JOB_EVENTS_CHANNEL, 
 
-    buildEvent(job, "JOB_NOTIFICATION_FAILED", type, JobStatus.FAILED, {
-      notificationType,
+    buildEvent(job, "JOB_FAILED_NOTIFICATION", type, JobStatus.FAILED, {
       message,
     }),
   );

@@ -2,7 +2,8 @@ import { Worker } from "bullmq";
 import { redisConnectionOptions } from "../utils/redis";
 import jobLifecycleService from "../services/jobLifecycle.services";
 import jobEventPublisher from "../events/job.events";
-import { JobType } from "../generated/prisma/enums";
+import { JobType, NotificationEventType } from "../generated/prisma/enums";
+import notificationService from "../services/notification.service";
 import webhookProcessor from "../processors/webhook.processor";
 
 const webhookWorker = new Worker(
@@ -20,6 +21,14 @@ const webhookWorker = new Worker(
       await Promise.all([
         jobLifecycleService.complete(job, execution.id, startTime, result),
         jobEventPublisher.publishCompleted(job, JobType.WEBHOOK, result),
+        jobEventPublisher.publishJobNotificationCompleted(job, JobType.WEBHOOK, "WEBHOOK"),
+        notificationService.createNotification({
+          userId: job.data.userId,
+          jobId: job.data.jobId,
+          title: "Webhook Completed",
+          message: `Webhook job "${job.data.name || job.data.jobId}" completed successfully.`,
+          type: NotificationEventType.JOB_COMPLETED,
+        })
       ]);
     } catch (error: any) {
       if (job.attemptsMade + 1 >= job.opts.attempts!) {
@@ -31,6 +40,14 @@ const webhookWorker = new Worker(
             error as Error,
           ),
           jobEventPublisher.publishFailed(job, JobType.WEBHOOK, error as Error),
+          jobEventPublisher.publishJobNotificationFailed(job, JobType.WEBHOOK, "WEBHOOK"),
+          notificationService.createNotification({
+            userId: job.data.userId,
+            jobId: job.data.jobId,
+            title: "Webhook Failed",
+            message: `Webhook job "${job.data.name || job.data.jobId}" failed.`,
+            type: NotificationEventType.JOB_FAILED,
+          })
         ]);
       } else {
         await Promise.all([

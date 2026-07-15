@@ -2,8 +2,9 @@ import {Worker} from "bullmq";
 import { redisConnectionOptions } from "../utils/redis";
 import jobLifecycleService from "../services/jobLifecycle.services";
 import jobEventPublisher from "../events/job.events";
-import { JobType } from "../generated/prisma/enums";
+import { JobType, NotificationEventType } from "../generated/prisma/enums";
 import reminderProcessor from "../processors/reminder.processor";
+import notificationService from "../services/notification.service";
 
 const reminderWorker = new Worker(
     "reminderQueue",
@@ -20,14 +21,23 @@ const reminderWorker = new Worker(
 
             await Promise.all([
                 jobLifecycleService.complete(job, execution.id, startTime, response),
-                jobEventPublisher.publishCompleted(job, JobType.REMINDER, response)
+                jobEventPublisher.publishCompleted(job, JobType.REMINDER, response),
+                jobEventPublisher.publishJobNotificationCompleted(job, JobType.REMINDER, "REMINDER")
             ])
 
         }catch(error: any){
             if(job.attemptsMade + 1 >= job.opts.attempts!){
                 await Promise.all([
                     jobLifecycleService.fail(job, execution.id, startTime, error as Error),
-                    jobEventPublisher.publishFailed(job, JobType.REMINDER, error as Error)
+                    jobEventPublisher.publishFailed(job, JobType.REMINDER, error as Error),
+                    jobEventPublisher.publishJobNotificationFailed(job, JobType.REMINDER, "REMINDER"),
+                    notificationService.createNotification({
+                      userId: job.data.userId,
+                      jobId: job.data.jobId,
+                      title: "Reminder Failed",
+                      message: `Reminder job "${job.data.name || job.data.jobId}" failed.`,
+                      type: NotificationEventType.JOB_FAILED,
+                    })
                 ])
             } else{
                 await Promise.all([

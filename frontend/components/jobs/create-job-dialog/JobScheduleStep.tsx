@@ -29,8 +29,8 @@ export function JobScheduleStep({
           control={form.control}
           name="scheduleType"
           render={({ field }) => (
-            <div className="grid grid-cols-3 gap-2">
-              {(["immediate", "scheduled", "recurring"] as const).map(
+            <div className="grid grid-cols-2 gap-2">
+              {(["immediate", "scheduled"] as const).map(
                 (option) => (
                   <button
                     key={option}
@@ -58,16 +58,6 @@ export function JobScheduleStep({
             {...form.register("scheduledAt")}
             type="datetime-local"
             className="input-field"
-          />
-        </Field>
-      )}
-
-      {scheduleType === "recurring" && (
-        <Field label="Cron expression">
-          <input
-            {...form.register("cronExpression")}
-            placeholder="e.g. 0 9 * * 1-5"
-            className="input-field font-mono text-xs"
           />
         </Field>
       )}

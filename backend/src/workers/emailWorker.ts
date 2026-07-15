@@ -3,7 +3,8 @@ import { redisConnectionOptions } from "../utils/redis";
 import emailProcessor from "../processors/email.processor";
 import jobLifecycleService from "../services/jobLifecycle.services";
 import jobEventPublisher from "../events/job.events";
-import { JobType } from "../generated/prisma/enums";
+import { JobType, NotificationEventType } from "../generated/prisma/enums";
+import notificationService from "../services/notification.service";
 
 const emailWorker = new Worker(
   "emailQueue",
@@ -21,7 +22,15 @@ const emailWorker = new Worker(
 
       await Promise.all([
         jobLifecycleService.complete(job, execution.id, startTime),
-        jobEventPublisher.publishCompleted(job, JobType.EMAIL)
+        jobEventPublisher.publishCompleted(job, JobType.EMAIL),
+        jobEventPublisher.publishJobNotificationCompleted(job, JobType.EMAIL, "EMAIL"),
+        notificationService.createNotification({
+          userId: job.data.userId,
+          jobId: job.data.jobId,
+          title: "Email Sent",
+          message: `Email job "${job.data.name || job.data.jobId}" completed successfully.`,
+          type: NotificationEventType.JOB_COMPLETED,
+        })
       ])
 
       return {
@@ -31,7 +40,15 @@ const emailWorker = new Worker(
       if (job.attemptsMade + 1 >= job.opts.attempts!) {
         await Promise.all([
           jobLifecycleService.fail(job, execution.id, startTime, error as Error),
-          jobEventPublisher.publishFailed(job, JobType.EMAIL, error as Error)
+          jobEventPublisher.publishFailed(job, JobType.EMAIL, error as Error),
+          jobEventPublisher.publishJobNotificationFailed(job, JobType.EMAIL, "EMAIL"),
+          notificationService.createNotification({
+            userId: job.data.userId,
+            jobId: job.data.jobId,
+            title: "Email Failed",
+            message: `Email job "${job.data.name || job.data.jobId}" failed.`,
+            type: NotificationEventType.JOB_FAILED,
+          })
         ])
       } else {
         await Promise.all([

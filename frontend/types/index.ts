@@ -162,7 +162,9 @@ export interface JobSocketEvent {
     | "JOB_RETRYING"
     | "JOB_CANCELLED"
     | "JOB_PAUSED"
-    | "JOB_RESUMED";
+    | "JOB_RESUMED"
+    | "JOB_COMPLETED_NOTIFICATION"
+    | "JOB_FAILED_NOTIFICATION";
   jobId: string;
   type: JobType;
   status: JobStatus;

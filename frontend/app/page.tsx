@@ -3,7 +3,6 @@ import { HeroSection } from "@/components/landing/HeroSection";
 import { ArchitectureSection } from "@/components/landing/ArchitectureSection";
 import { FeaturesSection } from "@/components/landing/FeaturesSection";
 import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
-import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { WhyCronosQSection } from "@/components/landing/WhyCronosQSection";
 import { FooterSection } from "@/components/landing/FooterSection";
 
@@ -17,7 +16,6 @@ export default function Home() {
         <ArchitectureSection />
         <FeaturesSection />
         <HowItWorksSection />
-        <TestimonialsSection />
         <WhyCronosQSection />
       </main>
 

@@ -1,61 +1,50 @@
-# ⚡ CronosQ — Distributed Job Scheduling Platform
+<div align="center">
+  <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/zap.svg" width="60" alt="CronosQ Logo"/>
+  <h1>CronosQ</h1>
+  <p><b>A production-ready distributed job scheduling platform</b></p>
 
-A production-ready distributed job scheduling platform that enables reliable execution of background jobs such as **Email**, **Webhook**, and **Reminder** tasks with support for retries, delayed execution, real-time status updates, execution history, and audit logging.
+  <p>
+    <img src="https://img.shields.io/badge/Node.js-18+-green.svg?logo=nodedotjs" alt="Node.js" />
+    <img src="https://img.shields.io/badge/TypeScript-5.0+-blue.svg?logo=typescript" alt="TypeScript" />
+    <img src="https://img.shields.io/badge/Next.js-14-black.svg?logo=nextdotjs" alt="Next.js" />
+    <img src="https://img.shields.io/badge/Prisma-ORM-1B222D.svg?logo=prisma" alt="Prisma" />
+    <img src="https://img.shields.io/badge/Redis-BullMQ-DC382D.svg?logo=redis" alt="Redis" />
+  </p>
 
-Built using **Node.js**, **Express**, **TypeScript**, **BullMQ**, **Redis**, **PostgreSQL**, **Prisma**, and **Socket.IO**.
+  <p>
+    <em>Reliable execution of background jobs (Email, Webhook, Reminders) with support for cron schedules, retries, delayed execution, real-time status updates, and audit logging.</em>
+  </p>
+</div>
 
----
+<br />
 
 ## ✨ Features
 
-- 📧 Email Job Scheduling
-- 🌐 Webhook Execution
-- ⏰ Reminder Jobs
-- 🕒 Delayed & Scheduled Jobs
-- 🔁 Automatic Retry with Exponential Backoff
-- 💀 Dead Letter Handling
-- 📜 Job Execution History
-- 📊 Job Lifecycle Tracking
-- 🔔 Real-time Updates via Socket.IO
-- 📡 Redis Pub/Sub Event Streaming
-- 🔐 Clerk Authentication
-- 📝 Audit Logging
-- ✅ Zod Validation
-- ⚡ Type-safe Prisma ORM
+- **🌐 Versatile Job Types:** Built-in support for **Email**, **Webhook**, and **Reminder** tasks.
+- **🕒 Advanced Scheduling:** Run jobs immediately or schedule them for the future with delays.
+- **🔁 Bulletproof Execution:** Automatic retries with exponential backoff and dead-letter queue (DLQ) handling.
+- **📊 Observability:** Comprehensive job execution history, audit logs, and lifecycle tracking.
+- **⚡ Real-time Dashboard:** Live updates powered by **Socket.IO** and **Redis Pub/Sub**.
+- **🔐 Secure & Typed:** Clerk authentication, Zod payload validation, and end-to-end Type-safe Prisma ORM.
 
 ---
 
-# Tech Stack
+## 🛠️ Tech Stack
 
-## Backend
-
-- Node.js
-- Express.js
-- TypeScript
-- Prisma ORM
-- PostgreSQL (Supabase)
-
-## Queue
-
-- BullMQ
-- Redis (Upstash)
-
-## Authentication
-
-- Clerk
-
-## Real-time
-
-- Socket.IO
-- Redis Pub/Sub
-
-## Validation
-
-- Zod
+| Domain | Technologies |
+| :--- | :--- |
+| **Frontend** | Next.js 14, Tailwind CSS, Radix UI, TanStack Query |
+| **Backend** | Node.js, Express.js, TypeScript, Zod |
+| **Database** | PostgreSQL (Supabase), Prisma ORM |
+| **Queue & Cache** | Redis (Upstash), BullMQ |
+| **Real-time & Auth** | Socket.IO, Redis Pub/Sub, Clerk |
 
 ---
 
-## High Level Architecture
+## 🏗️ High-Level Architecture
+
+<details>
+<summary><b>View System Architecture (Mermaid)</b></summary>
 
 ```mermaid
 flowchart LR
@@ -154,301 +143,175 @@ flowchart LR
     SOCKET --> NOTIF
 ```
 
----
-# Job Lifecycle
+</details>
 
-```mermaid
-stateDiagram-v2
-
-    [*] --> CREATED
-
-    CREATED --> QUEUED
-
-    QUEUED --> RUNNING
-
-    RUNNING --> COMPLETED
-
-    RUNNING --> FAILED
-
-    FAILED --> RETRYING
-
-    RETRYING --> RUNNING
-
-    FAILED --> DEAD_LETTER
-
-    COMPLETED --> [*]
-
-    DEAD_LETTER --> [*]
-```
-
----
-# Job Processing Pipeline
+<details>
+<summary><b>View Job Processing Pipeline (Mermaid)</b></summary>
 
 ```mermaid
 sequenceDiagram
-
     actor User
-
     participant FE as Next.js Frontend
-
     participant API as Express API
-
     participant DB as PostgreSQL
-
     participant Q as BullMQ Queue
-
     participant W as Worker
-
     participant EXT as External Service
-
     participant PS as Redis Pub/Sub
-
     participant IO as Socket.IO
 
     User->>FE: Create Job
-
     FE->>API: POST /jobs
-
     API->>DB: Save Job
-
     API->>Q: Add BullMQ Job
-
     API-->>FE: 201 Created
-
     Q->>W: Pick Job
-
     W->>DB: Update Status → RUNNING
-
     W->>PS: Publish JOB_STARTED
-
     PS->>IO: Forward Event
-
     IO-->>FE: Live Update
-
     W->>EXT: Execute Email / Webhook
-
     EXT-->>W: Response
-
     W->>DB: Save Execution
-
     W->>DB: Update Status
-
     alt Success
         W->>PS: Publish JOB_COMPLETED
     else Failure
         W->>PS: Publish JOB_FAILED
     end
-
     PS->>IO: Broadcast Event
-
     IO-->>FE: Update Dashboard
 ```
 
----
+</details>
 
-# Project Structure
+<details>
+<summary><b>View Job Lifecycle (Mermaid)</b></summary>
 
+```mermaid
+stateDiagram-v2
+    [*] --> CREATED
+    CREATED --> QUEUED
+    QUEUED --> RUNNING
+    RUNNING --> COMPLETED
+    RUNNING --> FAILED
+    FAILED --> RETRYING
+    RETRYING --> RUNNING
+    FAILED --> DEAD_LETTER
+    COMPLETED --> [*]
+    DEAD_LETTER --> [*]
 ```
-backend/
-│
-├── src
-│   ├── config
-│   ├── controllers
-│   ├── routes
-│   ├── middlewares
-│   ├── services
-│   ├── workers
-│   ├── processors
-│   ├── queues
-│   ├── socket
-│   ├── events
-│   ├── validators
-│   ├── utils
-│   ├── prisma
-│   └── app.ts
-│
-└── prisma
-    └── schema.prisma
-```
+</details>
 
 ---
 
-# Supported Job Types
+## 🚀 Supported Job Types
 
-## Email
+CronosQ handles multiple background tasks natively, each isolated in its own worker for horizontal scalability.
 
-Sends scheduled emails.
-
-Payload
-
+### 📧 Email
+Sends scheduled emails (via Resend or similar providers).
 ```json
 {
   "to": "user@example.com",
-  "subject": "Welcome",
-  "body": "Hello World"
+  "subject": "Welcome to CronosQ!",
+  "body": "Your scheduled email has arrived."
 }
 ```
 
----
-
-## Webhook
-
-Executes HTTP requests.
-
-Payload
-
+### 🌐 Webhook
+Executes HTTP requests to external APIs with custom methods and headers.
 ```json
 {
-  "url": "https://example.com/webhook",
+  "url": "https://api.example.com/sync",
   "method": "POST",
-  "headers": {},
-  "body": {}
+  "headers": { "Authorization": "Bearer token" },
+  "body": { "syncId": 123 }
 }
 ```
 
----
-
-## Reminder
-
-Creates reminder notifications and optionally sends emails.
-
-Payload
-
+### ⏰ Reminder
+Creates in-app reminder notifications and optionally dispatches emails.
 ```json
 {
-  "title": "Meeting",
-  "message": "Join meeting in 10 minutes",
-  "channels": [
-    "EMAIL",
-    "IN_APP"
-  ]
+  "title": "Quarterly Planning",
+  "message": "Join the planning meeting in 10 minutes",
+  "channels": ["EMAIL", "IN_APP"]
 }
 ```
 
 ---
 
-# Worker Architecture
+## ⚡ Real-time Updates
 
-Each job type has an independent worker.
+Workers publish lifecycle events through **Redis Pub/Sub**, which are broadcasted to the frontend via **Socket.IO** for instantaneous UI updates without polling.
 
-```
-Email Queue
-    ↓
-Email Worker
+**Event Flow:**
+`Worker` ➡️ `Redis Pub/Sub` ➡️ `Socket.IO` ➡️ `Frontend`
 
-Webhook Queue
-    ↓
-Webhook Worker
-
-Reminder Queue
-    ↓
-Reminder Worker
-```
-
-This makes the platform horizontally scalable.
+**Supported Events:**
+`JOB_STARTED`, `JOB_COMPLETED`, `JOB_FAILED`, `JOB_RETRYING`, `JOB_COMPLETED_NOTIFICATION`, `JOB_FAILED_NOTIFICATION`
 
 ---
 
-# Real-time Updates
+## 🔒 Reliability Features
 
-Workers publish lifecycle events through Redis Pub/Sub.
-
-```
-Worker
-
-↓
-
-Redis Pub/Sub
-
-↓
-
-Socket.IO
-
-↓
-
-Frontend
-```
-
-Supported events
-
-- JOB_STARTED
-- JOB_COMPLETED
-- JOB_FAILED
-- JOB_RETRY
+- **BullMQ Strategy:** Native locking, atomic operations, and robust queue management.
+- **Exponential Backoff:** Smart retry delays to prevent overwhelming failing services.
+- **Dead Letter Handling:** Isolates permanently failing jobs for manual review.
+- **Idempotent Execution:** Guaranteed exactly-once execution for critical tasks.
+- **Audit Logs:** Immutable records of job creation, modification, and deletion.
 
 ---
 
-# REST APIs
+## 💻 REST APIs
 
-## Jobs
-
-| Method | Endpoint |
-|----------|----------|
-| POST | `/jobs` |
-| GET | `/jobs` |
-| GET | `/jobs/:id` |
-
----
-
-## Notifications
-
-| Method | Endpoint |
-|----------|----------|
-| GET | `/notifications` |
-| GET | `/notifications/:id` |
+| Resource | Method | Endpoint | Description |
+| :--- | :---: | :--- | :--- |
+| **Jobs** | `POST` | `/jobs` | Create a new job (immediate, delayed, or cron) |
+| **Jobs** | `GET` | `/jobs` | List and filter jobs |
+| **Jobs** | `GET` | `/jobs/:id` | Get job details and execution history |
+| **Notifications** | `GET` | `/notifications` | List user notifications |
+| **Notifications** | `GET` | `/notifications/:id` | Get specific notification |
 
 ---
 
-# Reliability Features
+## ⚙️ Environment Setup
 
-- BullMQ Retry Strategy
-- Exponential Backoff
-- Delayed Execution
-- Dead Letter Handling
-- Persistent Execution History
-- Idempotent Job IDs
-- Audit Logs
-- Worker Isolation
+Create a `.env` file in the backend root with the following variables:
 
----
+```env
+# Database
+DATABASE_URL=postgresql://user:password@localhost:5432/cronosq
 
-# Environment Variables
+# Redis
+REDIS_URL=redis://localhost:6379
 
-```
-DATABASE_URL=
+# Auth (Clerk)
+CLERK_SECRET_KEY=sk_test_***
+CLERK_PUBLISHABLE_KEY=pk_test_***
+JWT_SECRET=your_jwt_secret
 
-REDIS_URL=
+# External Services
+RESEND_API_KEY=re_***
 
-CLERK_SECRET_KEY=
-
-CLERK_PUBLISHABLE_KEY=
-
-RESEND_API_KEY=
-
-FRONTEND_URL=
-
-JWT_SECRET=
+# Config
+FRONTEND_URL=http://localhost:3000
 ```
 
 ---
 
-# Future Improvements
+## 🔮 Future Improvements
 
-- Cron Jobs
-- Recurring Schedules
-- Worker Dashboard
-- Queue Metrics
-- Prometheus Monitoring
-- OpenTelemetry Tracing
-- Docker Compose
-- Kubernetes Deployment
-- Multi-Worker Horizontal Scaling
-- Rate Limiting
-- Admin Dashboard
+- [ ] Cron Jobs & Recurring Schedules
+- [ ] Worker Dashboard & Metrics (Prometheus/OpenTelemetry)
+- [ ] Docker Compose & Kubernetes Deployment manifests
+- [ ] Multi-Worker Horizontal Scaling configurations
+- [ ] Job Rate Limiting per tenant/user
+- [ ] Global Admin Dashboard
 
 ---
 
-
-# License
-
-MIT
+<div align="center">
+  <p>Built with ❤️ by the CronosQ team. Licensed under <b>MIT</b>.</p>
+</div>

@@ -8,7 +8,6 @@ const NAV_LINKS = [
   { href: "#architecture", label: "Architecture" },
   { href: "#features", label: "Features" },
   { href: "#how-it-works", label: "How it works" },
-  { href: "#testimonials", label: "Testimonials" },
 ];
 
 export function LandingNav() {
