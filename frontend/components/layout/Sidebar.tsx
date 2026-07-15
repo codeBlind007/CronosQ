@@ -27,7 +27,12 @@ const NAV = [
   { href: "/dashboard/settings", label: "Settings", icon: Settings, exact: false },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
   const { signOut } = useClerk();
   const unreadCount = useUnreadCount();
@@ -36,7 +41,21 @@ export function Sidebar() {
     exact ? pathname === href : pathname.startsWith(href);
 
   return (
-    <aside className="fixed left-0 top-0 h-dvh w-[260px] border-r border-white/[0.08] bg-[#111318] flex flex-col z-30">
+    <>
+      {/* Mobile Backdrop */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 z-40 lg:hidden"
+          onClick={onClose}
+        />
+      )}
+      
+      <aside 
+        className={cn(
+          "fixed left-0 top-0 h-dvh w-[260px] border-r border-white/[0.08] bg-[#111318] flex flex-col z-50 transition-transform duration-300 lg:translate-x-0",
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
       {/* Logo */}
       <div className="flex items-center gap-2.5 px-6 py-6 border-b border-white/[0.08]">
         <Zap size={18} className="text-indigo-400" />
@@ -50,11 +69,14 @@ export function Sidebar() {
         {NAV.map(({ href, label, icon: Icon, exact, badge }) => {
           const active = isActive(href, exact);
           return (
-            <Link
-              key={href}
-              href={href}
-              className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150",
+              <Link
+                key={href}
+                href={href}
+                onClick={() => {
+                  if (isOpen) onClose();
+                }}
+                className={cn(
+                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150",
                 active
                   ? "bg-indigo-500/10 text-[#FAFAFA]"
                   : "text-[#A1A1AA] hover:text-[#FAFAFA] hover:bg-white/[0.04]"
@@ -82,6 +104,7 @@ export function Sidebar() {
           <span>Sign Out</span>
         </button>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }
