@@ -62,8 +62,8 @@ const FEATURES = [
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="px-10 py-24 max-w-[1400px] mx-auto">
-      <div className="mb-16 max-w-[650px]">
+    <section id="features" className="px-10 py-24 max-w-350 mx-auto">
+      <div className="mb-16 max-w-162.5">
         <p className="text-sm text-[#71717A] mb-3">Features</p>
         <h2 className="text-[32px] font-bold text-[#FAFAFA] tracking-tight leading-tight">
           Everything you need for reliable job scheduling

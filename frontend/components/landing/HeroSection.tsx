@@ -21,16 +21,16 @@ const HERO_FEATURES = [
 
 export function HeroSection() {
   return (
-    <section className="max-w-[1400px] mx-auto px-10 pt-32 pb-24">
+    <section className="max-w-350 mx-auto px-10 pt-32 pb-24">
       <p className="text-sm text-[#71717A] mb-6">
         Distributed job scheduling
       </p>
 
-      <h1 className="text-[48px] md:text-[56px] font-bold tracking-tight text-[#FAFAFA] max-w-[650px] leading-[1.1]">
+      <h1 className="text-[48px] md:text-[56px] font-bold tracking-tight text-[#FAFAFA] max-w-162.5 leading-[1.1]">
         Reliable job scheduling for production systems
       </h1>
 
-      <p className="mt-6 text-[17px] text-[#A1A1AA] max-w-[650px] leading-relaxed">
+      <p className="mt-6 text-[17px] text-[#A1A1AA] max-w-162.5 leading-relaxed">
         Schedule emails, fire webhooks, and send reminders with full retry
         handling, real-time monitoring, and execution history — all in one
         platform.
@@ -48,7 +48,7 @@ export function HeroSection() {
           href="https://github.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 px-5 py-2.5 border border-white/[0.08] bg-[#111318] hover:bg-[#171A21] hover:-translate-y-px text-[#FAFAFA] font-medium rounded-lg transition-all duration-150 text-sm"
+          className="flex items-center gap-2 px-5 py-2.5 border border-white/8 bg-[#111318] hover:bg-[#171A21] hover:-translate-y-px text-[#FAFAFA] font-medium rounded-lg transition-all duration-150 text-sm"
         >
           <ExternalLink size={16} />
           GitHub

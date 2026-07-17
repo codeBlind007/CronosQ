@@ -26,7 +26,7 @@ interface RecentJobsProps {
 export function RecentJobs({ jobs }: RecentJobsProps) {
   return (
     <div className="card overflow-hidden">
-      <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.08]">
+      <div className="flex items-center justify-between px-6 py-5 border-b border-white/8">
         <h2 className="section-title">Recent Jobs</h2>
         <Link
           href="/dashboard/jobs"
@@ -48,7 +48,7 @@ export function RecentJobs({ jobs }: RecentJobsProps) {
             <Link
               key={job.id}
               href={`/dashboard/jobs/${job.id}`}
-              className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06] last:border-b-0 hover:bg-[#171A21] transition-colors duration-150 group"
+              className="flex items-center justify-between px-6 py-4 border-b border-white/6 last:border-b-0 hover:bg-[#171A21] transition-colors duration-150 group"
             >
               <div className="flex items-center gap-4 min-w-0">
                 <JobTypeBadge type={job.type} />
@@ -61,7 +61,7 @@ export function RecentJobs({ jobs }: RecentJobsProps) {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 flex-shrink-0">
+              <div className="flex items-center gap-3 shrink-0">
                 <StatusBadge status={job.status} />
                 <ArrowRight
                   size={14}

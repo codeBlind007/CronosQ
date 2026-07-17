@@ -81,7 +81,7 @@ export function DashboardClient({
   const { data: notificationsData } = useNotifications();
   const { data: statsData } = useJobStats();
 
-  const jobs = jobsData?.data ?? initialJobs ?? [];
+  const jobs = useMemo(() => jobsData?.data ?? initialJobs ?? [], [jobsData?.data, initialJobs]);
   const notifications = notificationsData?.data ?? initialNotifications ?? [];
   const stats = statsData?.data ?? initialStats;
 

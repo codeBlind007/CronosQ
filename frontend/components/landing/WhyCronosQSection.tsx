@@ -27,10 +27,10 @@ export function WhyCronosQSection() {
   return (
     <section
       id="why-cronosq"
-      className="px-10 py-24 bg-[#111318] border-t border-white/[0.08]"
+      className="px-10 py-24 bg-[#111318] border-t border-white/8"
     >
-      <div className="max-w-[1400px] mx-auto">
-        <div className="mb-16 max-w-[650px]">
+      <div className="max-w-350 mx-auto">
+        <div className="mb-16 max-w-162.5">
           <p className="text-sm text-[#71717A] mb-3">Why CronosQ</p>
           <h2 className="text-[32px] font-bold text-[#FAFAFA] tracking-tight leading-tight">
             Designed for modern backend workflows
@@ -44,7 +44,7 @@ export function WhyCronosQSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl">
           {COMPARISONS.map(({ icon: Icon, title, desc }) => (
             <div key={title} className="flex gap-4 p-6 card card-hover">
-              <Icon size={18} className="text-[#71717A] flex-shrink-0 mt-0.5" />
+              <Icon size={18} className="text-[#71717A] shrink-0 mt-0.5" />
               <div className="flex flex-col gap-2">
                 <h3 className="text-sm font-semibold text-[#FAFAFA]">{title}</h3>
                 <p className="text-[15px] text-[#71717A] leading-relaxed">

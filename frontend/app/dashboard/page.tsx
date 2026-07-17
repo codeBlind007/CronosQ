@@ -104,7 +104,7 @@ export default async function DashboardPage() {
         title="Dashboard"
         description="Monitor system metrics, queue states, and execution runs."
       />
-      <div className="flex-1 p-10 max-w-[1400px] w-full mx-auto">
+      <div className="flex-1 p-10 max-w-350 w-full mx-auto">
         <DashboardClient
           initialJobs={initialJobs}
           initialNotifications={initialNotifications}

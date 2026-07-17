@@ -4,19 +4,15 @@ import Link from "next/link";
 import { useNotificationById } from "@/hooks/useNotifications";
 import {
     ArrowLeft,
-    Clock,
     CheckCircle,
     XCircle,
     RefreshCw,
     Bell,
     AlertCircle,
     ExternalLink,
-    Mail,
-    Webhook,
     Smartphone,
     Eye,
     Calendar,
-    Layers,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Notification, NotificationEventType } from "@/types";
@@ -306,7 +302,7 @@ export function NotificationDetails({
                                 <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
                                     Payload Metadata (Raw)
                                 </h3>
-                                <pre className="p-4 rounded-xl bg-zinc-950 border border-zinc-900 text-xs font-mono text-indigo-300 overflow-x-auto max-h-[250px]">
+                                <pre className="p-4 rounded-xl bg-zinc-950 border border-zinc-900 text-xs font-mono text-indigo-300 overflow-x-auto max-h-62.5">
                                     {JSON.stringify(currentNotification.metadata, null, 2)}
                                 </pre>
                             </div>

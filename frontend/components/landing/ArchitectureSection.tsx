@@ -27,8 +27,8 @@ const ARCHITECTURE_NODES = [
 
 export function ArchitectureSection() {
   return (
-    <section id="architecture" className="px-10 py-24 max-w-[1400px] mx-auto border-t border-white/[0.08]">
-      <div className="mb-16 max-w-[650px]">
+    <section id="architecture" className="px-10 py-24 max-w-350 mx-auto border-t border-white/8">
+      <div className="mb-16 max-w-162.5">
         <p className="text-sm text-[#71717A] mb-3">Architecture</p>
         <h2 className="text-[32px] font-bold text-[#FAFAFA] tracking-tight leading-tight">
           Built for production workloads
@@ -43,12 +43,12 @@ export function ArchitectureSection() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {ARCHITECTURE_NODES.map(({ title, icon: Icon }, i) => (
             <div key={title} className="relative flex flex-col items-center text-center gap-3">
-              <div className="flex items-center justify-center size-10 rounded-lg bg-[#171A21] border border-white/[0.08]">
+              <div className="flex items-center justify-center size-10 rounded-lg bg-[#171A21] border border-white/8">
                 <Icon size={18} className="text-[#71717A]" />
               </div>
               <span className="text-sm font-medium text-[#FAFAFA]">{title}</span>
               {i < ARCHITECTURE_NODES.length - 1 && (
-                <div className="hidden md:block absolute top-5 left-[calc(50%+28px)] w-[calc(100%-56px)] h-px bg-white/[0.08]" />
+                <div className="hidden md:block absolute top-5 left-[calc(50%+28px)] w-[calc(100%-56px)] h-px bg-white/8" />
               )}
             </div>
           ))}
@@ -56,10 +56,10 @@ export function ArchitectureSection() {
       </div>
 
       {/* Detailed nodes */}
-      <div className="relative border-l border-white/[0.08] pl-8 ml-2 max-w-2xl flex flex-col gap-8">
+      <div className="relative border-l border-white/8 pl-8 ml-2 max-w-2xl flex flex-col gap-8">
         {ARCHITECTURE_NODES.map(({ title, desc, icon: Icon }) => (
           <div key={title} className="relative">
-            <div className="absolute -left-[41px] top-1 flex items-center justify-center size-6 rounded-md bg-[#111318] border border-white/[0.08]">
+            <div className="absolute -left-10.25 top-1 flex items-center justify-center size-6 rounded-md bg-[#111318] border border-white/8">
               <Icon size={12} className="text-[#71717A]" />
             </div>
             <div className="flex flex-col gap-1">

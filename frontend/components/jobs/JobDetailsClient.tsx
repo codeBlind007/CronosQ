@@ -9,8 +9,8 @@ import { JobTypeBadge } from "@/components/shared/JobTypeBadge";
 import { JobTimeline } from "@/components/jobs/JobTimeline";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { Skeleton } from "@/components/shared/LoadingSkeleton";
-import { ArrowLeft, Clock, RefreshCw, Database, Trash, Shield, Info, Skull } from "lucide-react";
-import type { Job, JobExecution } from "@/types";
+import { ArrowLeft, Skull } from "lucide-react";
+import type { Job } from "@/types";
 
 function formatDateTime(value: string | Date) {
   return new Date(value).toLocaleString();
@@ -147,7 +147,7 @@ export function JobDetailsClient({ jobId, initialJob }: JobDetailsClientProps) {
                         <td className="px-5 py-3">
                           {exe.durationMs ? `${exe.durationMs}ms` : "—"}
                         </td>
-                        <td className="px-5 py-3 text-red-400/80 max-w-[200px] truncate" title={exe.errorMessage ?? ""}>
+                        <td className="px-5 py-3 text-red-400/80 max-w-50 truncate" title={exe.errorMessage ?? ""}>
                           {exe.errorMessage ?? "—"}
                         </td>
                       </tr>
@@ -214,7 +214,7 @@ export function JobDetailsClient({ jobId, initialJob }: JobDetailsClientProps) {
                 Payload Parameters
               </h2>
             </div>
-            <pre className="p-4 rounded-xl bg-zinc-950 border border-zinc-900 text-xs font-mono text-indigo-300 overflow-x-auto max-h-[300px]">
+            <pre className="p-4 rounded-xl bg-zinc-950 border border-zinc-900 text-xs font-mono text-indigo-300 overflow-x-auto max-h-75">
               {JSON.stringify(currentJob.payload ?? {}, null, 2)}
             </pre>
           </div>

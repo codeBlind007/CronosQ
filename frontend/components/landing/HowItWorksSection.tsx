@@ -37,10 +37,10 @@ export function HowItWorksSection() {
   return (
     <section
       id="how-it-works"
-      className="px-10 py-24 bg-[#111318] border-y border-white/[0.08]"
+      className="px-10 py-24 bg-[#111318] border-y border-white/8"
     >
-      <div className="max-w-[1400px] mx-auto">
-        <div className="mb-16 max-w-[650px]">
+      <div className="max-w-350 mx-auto">
+        <div className="mb-16 max-w-162.5">
           <p className="text-sm text-[#71717A] mb-3">How it works</p>
           <h2 className="text-[32px] font-bold text-[#FAFAFA] tracking-tight leading-tight">
             From creation to execution
@@ -58,7 +58,7 @@ export function HowItWorksSection() {
                 <span className="text-xs font-medium text-[#71717A] tabular-nums">
                   {step}
                 </span>
-                <div className="flex items-center justify-center size-8 rounded-lg bg-[#171A21] border border-white/[0.08]">
+                <div className="flex items-center justify-center size-8 rounded-lg bg-[#171A21] border border-white/8">
                   <Icon size={16} className="text-[#71717A]" />
                 </div>
               </div>
@@ -71,7 +71,7 @@ export function HowItWorksSection() {
                 </p>
               </div>
               {i < STEPS.length - 1 && (
-                <div className="hidden md:block absolute top-4 left-[calc(100%-8px)] w-4 h-px bg-white/[0.08]" />
+                <div className="hidden md:block absolute top-4 left-[calc(100%-8px)] w-4 h-px bg-white/8" />
               )}
             </div>
           ))}

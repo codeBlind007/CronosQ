@@ -10,7 +10,7 @@ interface TopbarProps {
 
 export function Topbar({ title, description }: TopbarProps) {
   return (
-    <header className="flex items-center justify-between px-10 py-6 border-b border-white/[0.08] bg-[#09090B] sticky top-0 z-20">
+    <header className="flex items-center justify-between px-10 py-6 border-b border-white/8 bg-[#09090B] sticky top-0 z-20">
       <div>
         <h1 className="text-[34px] font-bold tracking-tight text-[#FAFAFA] leading-tight">
           {title}
@@ -22,7 +22,7 @@ export function Topbar({ title, description }: TopbarProps) {
 
       <div className="flex items-center gap-3">
         <NotificationBell />
-        <div className="h-5 w-px bg-white/[0.08]" />
+        <div className="h-5 w-px bg-white/8" />
         <UserButton
           appearance={{
             elements: {

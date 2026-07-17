@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useForm, useWatch, type SubmitHandler, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { X } from "lucide-react";
@@ -64,11 +64,11 @@ export function CreateJobDialog({ open, onClose }: CreateJobDialogProps) {
   });
 
   const step3Form = useForm<Step3Data>({
-    resolver: zodResolver(step3Schema) as any,
+    resolver: zodResolver(step3Schema) as unknown as Resolver<Step3Data>,
     defaultValues: DEFAULT_STEP3_VALUES,
   });
 
-  const selectedType = step1Form.watch("type");
+  const selectedType = useWatch({ control: step1Form.control, name: "type" });
 
   const reset = () => {
     setStep(1);

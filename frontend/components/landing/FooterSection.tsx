@@ -3,8 +3,8 @@ import { ExternalLink, FileText } from "lucide-react";
 
 export function FooterSection() {
   return (
-    <footer className="border-t border-white/[0.08] bg-[#09090B] px-10 py-12">
-      <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+    <footer className="border-t border-white/8 bg-[#09090B] px-10 py-12">
+      <div className="max-w-350 mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex flex-col items-center md:items-start gap-1">
           <span className="text-sm font-semibold text-[#FAFAFA]">CronosQ</span>
           <span className="text-sm text-[#71717A]">
@@ -32,7 +32,7 @@ export function FooterSection() {
         </div>
       </div>
 
-      <div className="max-w-[1400px] mx-auto mt-8 pt-8 border-t border-white/[0.08] text-center md:text-left text-sm text-[#71717A]">
+      <div className="max-w-350 mx-auto mt-8 pt-8 border-t border-white/8 text-center md:text-left text-sm text-[#71717A]">
         &copy; {new Date().getFullYear()} CronosQ. All rights reserved.
       </div>
     </footer>

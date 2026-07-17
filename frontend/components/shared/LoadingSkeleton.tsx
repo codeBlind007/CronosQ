@@ -32,7 +32,7 @@ export function TableRowSkeleton({ cols = 6 }: { cols?: number }) {
     <tr className="border-b border-zinc-800/60">
       {Array.from({ length: cols }).map((_, i) => (
         <td key={i} className="px-4 py-3">
-          <Skeleton className="h-4 w-full max-w-[120px]" />
+          <Skeleton className="h-4 w-full max-w-30" />
         </td>
       ))}
     </tr>
@@ -52,7 +52,7 @@ export function TableSkeleton({ rows = 5, cols = 6 }: { rows?: number; cols?: nu
 export function NotificationSkeleton() {
   return (
     <div className="flex gap-3 p-4 border-b border-zinc-800/60">
-      <Skeleton className="h-8 w-8 rounded-full flex-shrink-0" />
+      <Skeleton className="h-8 w-8 rounded-full shrink-0" />
       <div className="flex flex-col gap-2 flex-1">
         <Skeleton className="h-3 w-3/4" />
         <Skeleton className="h-3 w-1/2" />

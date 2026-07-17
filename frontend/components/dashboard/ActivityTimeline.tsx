@@ -87,7 +87,7 @@ export function ActivityTimeline({ notifications }: ActivityTimelineProps) {
 
   return (
     <div className="card overflow-hidden">
-      <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.08]">
+      <div className="flex items-center justify-between px-6 py-5 border-b border-white/8">
         <h2 className="section-title">Recent Activity</h2>
         <Link
           href="/dashboard/notifications"
@@ -107,7 +107,7 @@ export function ActivityTimeline({ notifications }: ActivityTimelineProps) {
         <div className="px-6 py-5">
           <div className="relative">
             {/* Vertical timeline line */}
-            <div className="absolute left-[11px] top-2 bottom-2 w-px bg-white/[0.08]" />
+            <div className="absolute left-2.75 top-2 bottom-2 w-px bg-white/8" />
 
             <div className="flex flex-col gap-0">
               {items.map((notification) => {
@@ -122,10 +122,10 @@ export function ActivityTimeline({ notifications }: ActivityTimelineProps) {
                     className="relative flex gap-4 pb-6 last:pb-0 group"
                   >
                     {/* Timeline dot */}
-                    <div className="relative z-10 flex-shrink-0">
+                    <div className="relative z-10 shrink-0">
                       <div
                         className={cn(
-                          "size-[10px] rounded-full border-2 border-[#111318] mt-1.5",
+                          "size-2.5 rounded-full border-2 border-[#111318] mt-1.5",
                           config.dotColor
                         )}
                       />
@@ -135,7 +135,7 @@ export function ActivityTimeline({ notifications }: ActivityTimelineProps) {
                     <div className="flex gap-3 flex-1 min-w-0 pt-0">
                       <Icon
                         size={16}
-                        className={cn("flex-shrink-0 mt-0.5", config.iconColor)}
+                        className={cn("shrink-0 mt-0.5", config.iconColor)}
                       />
                       <div className="flex-1 min-w-0">
                         <p
@@ -153,7 +153,7 @@ export function ActivityTimeline({ notifications }: ActivityTimelineProps) {
                         </p>
                       </div>
                       {!notification.isRead && (
-                        <span className="flex-shrink-0 size-1.5 rounded-full bg-[#6366F1] mt-2" />
+                        <span className="shrink-0 size-1.5 rounded-full bg-[#6366F1] mt-2" />
                       )}
                     </div>
                   </Link>

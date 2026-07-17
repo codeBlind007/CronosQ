@@ -89,7 +89,7 @@ export function NotificationCard({
     >
       <div
         className={cn(
-          "flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.08]",
+          "flex h-8 w-8 items-center justify-center rounded-lg border border-white/8",
           config.bg
         )}
       >
@@ -109,7 +109,7 @@ export function NotificationCard({
             {notification.title}
           </p>
           {!notification.isRead && (
-            <span className="flex-shrink-0 size-1.5 rounded-full bg-[#6366F1] mt-1.5" />
+            <span className="shrink-0 size-1.5 rounded-full bg-[#6366F1] mt-1.5" />
           )}
         </div>
 

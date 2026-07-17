@@ -41,3 +41,4 @@ export type EmailData = z.infer<typeof emailPayloadSchema>;
 export type WebhookData = z.infer<typeof webhookPayloadSchema>;
 export type ReminderData = z.infer<typeof reminderPayloadSchema>;
 export type Step3Data = z.infer<typeof step3Schema>;
+export type ReminderChannel = z.infer<typeof reminderChannelSchema>;

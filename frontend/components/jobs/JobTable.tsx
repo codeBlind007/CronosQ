@@ -22,6 +22,20 @@ function formatDateTime(value: string | Date) {
   return new Date(value).toLocaleString();
 }
 
+function getRelativeTimeLabel(date: string | Date) {
+  const diffMs = Date.now() - new Date(date).getTime();
+  const diffMinutes = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMinutes / 60);
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffMinutes < 1) return "just now";
+  if (diffMinutes < 60) return `${diffMinutes}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
+
+  return formatDateTime(date);
+}
+
 export function JobTable({
   jobs,
   isLoading,
@@ -84,7 +98,7 @@ export function JobTable({
 
 function JobTableHead() {
   return (
-    <tr className="border-b border-white/[0.08]">
+    <tr className="border-b border-white/8">
       {["Name", "Type", "Status", "Priority", "Schedule", "Created", ""].map(
         (h) => (
           <th
@@ -100,22 +114,10 @@ function JobTableHead() {
 }
 
 function JobTableRow({ job }: { job: Job }) {
-  const createdAtLabel = (() => {
-    const diffMs = Date.now() - new Date(job.createdAt).getTime();
-    const diffMinutes = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMinutes / 60);
-    const diffDays = Math.floor(diffHours / 24);
-
-    if (diffMinutes < 1) return "just now";
-    if (diffMinutes < 60) return `${diffMinutes}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
-
-    return formatDateTime(job.createdAt);
-  })();
+  const createdAtLabel = getRelativeTimeLabel(job.createdAt);
 
   return (
-    <tr className="border-b border-white/[0.06] hover:bg-[#171A21]/50 transition-colors duration-150">
+    <tr className="border-b border-white/6 hover:bg-[#171A21]/50 transition-colors duration-150">
       <td className="px-5 py-3.5">
         <div className="flex items-center gap-2">
           {job.deadLettered && (

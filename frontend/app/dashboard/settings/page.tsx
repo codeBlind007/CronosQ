@@ -1,7 +1,8 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { Topbar } from "@/components/layout/Topbar";
-import { User, Shield, Key, Bell, CreditCard } from "lucide-react";
+import { User, Key, Bell} from "lucide-react";
+import Image from "next/image";
 
 export default async function SettingsPage() {
   const authSession = await auth();
@@ -21,9 +22,11 @@ export default async function SettingsPage() {
         {/* Profile summary card */}
         <div className="card p-6 flex flex-col sm:flex-row items-center gap-4">
           {user?.imageUrl ? (
-            <img
+            <Image
               src={user.imageUrl}
               alt="Avatar"
+              width={64}
+              height={64}
               className="w-16 h-16 rounded-full border border-zinc-800"
             />
           ) : (

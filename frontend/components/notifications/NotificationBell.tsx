@@ -6,6 +6,7 @@ import { Bell, CheckCircle2, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUnreadCount } from "@/hooks/useNotifications";
 import { getSocket } from "@/lib/socket";
+import type { JobSocketEvent } from "@/types";
 
 interface LivePopup {
   id: string;
@@ -22,7 +23,7 @@ export function NotificationBell() {
     const socket = getSocket();
     if (!socket) return;
 
-    const handleJobEvent = (event: any) => {
+    const handleJobEvent = (event: JobSocketEvent) => {
       if (
         event.event === "JOB_COMPLETED_NOTIFICATION" ||
         event.event === "JOB_FAILED_NOTIFICATION"

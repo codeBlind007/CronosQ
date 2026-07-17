@@ -170,6 +170,8 @@ export interface JobSocketEvent {
   status: JobStatus;
   executionId?: string;
   attemptsMade?: number;
+  name?: string;
+  jobName?: string;
   timestamp: string;
   message?: string;
 }

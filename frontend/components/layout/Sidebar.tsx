@@ -52,12 +52,12 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       
       <aside 
         className={cn(
-          "fixed left-0 top-0 h-dvh w-[260px] border-r border-white/[0.08] bg-[#111318] flex flex-col z-50 transition-transform duration-300 lg:translate-x-0",
+          "fixed left-0 top-0 h-dvh w-65 border-r border-white/8 bg-[#111318] flex flex-col z-50 transition-transform duration-300 lg:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
       {/* Logo */}
-      <div className="flex items-center gap-2.5 px-6 py-6 border-b border-white/[0.08]">
+      <div className="flex items-center gap-2.5 px-6 py-6 border-b border-white/8">
         <Zap size={18} className="text-indigo-400" />
         <span className="font-semibold text-[#FAFAFA] tracking-tight">
           CronosQ
@@ -79,7 +79,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                   "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150",
                 active
                   ? "bg-indigo-500/10 text-[#FAFAFA]"
-                  : "text-[#A1A1AA] hover:text-[#FAFAFA] hover:bg-white/[0.04]"
+                  : "text-[#A1A1AA] hover:text-[#FAFAFA] hover:bg-white/4"
               )}
             >
               <Icon size={16} />
@@ -95,10 +95,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       </nav>
 
       {/* Footer */}
-      <div className="px-4 py-6 border-t border-white/[0.08]">
+      <div className="px-4 py-6 border-t border-white/8">
         <button
           onClick={() => signOut({ redirectUrl: "/" })}
-          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-[#71717A] hover:text-[#FAFAFA] hover:bg-white/[0.04] transition-all duration-150"
+          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-[#71717A] hover:text-[#FAFAFA] hover:bg-white/4 transition-all duration-150"
         >
           <LogOut size={16} />
           <span>Sign Out</span>

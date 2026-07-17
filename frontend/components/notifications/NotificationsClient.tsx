@@ -5,7 +5,7 @@ import { useJobSocket } from "@/hooks/useJobSocket";
 import { NotificationCard } from "@/components/notifications/NotificationCard";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { NotificationSkeleton } from "@/components/shared/LoadingSkeleton";
-import { Bell, CheckSquare } from "lucide-react";
+import { Bell } from "lucide-react";
 import { useState } from "react";
 import type { Notification } from "@/types";
 
