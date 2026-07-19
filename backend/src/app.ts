@@ -15,13 +15,14 @@ dotenv.config();
 
 const app = express();
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
+const isProduction = process.env.ENVIRONMENT === 'production';
 
-const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
 
 app.use(cors({
-  origin: CLIENT_URL,
+  origin: FRONTEND_URL,
 }));
 
 
@@ -35,8 +36,9 @@ app.use(
 
 app.use(express.json());
 
-
-forwardToApp();
+if(!isProduction){
+  forwardToApp();
+}
 
 
 app.get('/', (req, res) => {
